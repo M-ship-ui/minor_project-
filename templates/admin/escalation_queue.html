@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Auto-Escalation Queue | Sanskriti Portal{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-danger text-uppercase font-monospace">Priority Protocol</span>
+                <span class="badge bg-dark font-monospace">Campus Security Desk</span>
+            </div>
+            <h3 class="fw-bold mb-1 text-danger">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i> Authority Escalation Queue
+            </h3>
+            <p class="text-muted small mb-0">Protocol-driven notification triggers that proactively flag prolonged unresolved items (&gt;7 days) or contested ownership disputes.</p>
+        </div>
+        <div>
+            <form method="POST" action="{{ url_for('run_auto_escalation_check') }}">
+                <button type="submit" class="btn btn-outline-danger fw-bold shadow-sm">
+                    <i class="fa-solid fa-arrows-rotate me-1"></i> Scan &amp; Run Escalation Rules
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Escalated Items Table -->
+    <div class="card shadow-sm border-danger">
+        <div class="card-header bg-danger text-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0">Escalated Academic Property Cases</h5>
+            <span class="badge bg-light text-danger fw-bold">{{ escalated_items|length }} Cases Pending Security Review</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small">
+                        <tr>
+                            <th>Ticket</th>
+                            <th>Asset Name</th>
+                            <th>Category &amp; Dept</th>
+                            <th>Days Unresolved</th>
+                            <th>Escalation Trigger Reason</th>
+                            <th>Escalated Timestamp</th>
+                            <th>Arbitration Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for esc in escalated_items %}
+                        <tr>
+                            <td>
+                                <span class="badge bg-danger font-monospace fs-6">
+                                    {{ esc.ticket_number }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark">{{ esc.title }}</div>
+                                <div class="small text-muted">{{ esc.location }}</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ esc.category }}</span>
+                                <div class="small text-muted">{{ esc.department }}</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning text-dark fw-bold">Active {{ esc.days_open or '7+' }} Days</span>
+                            </td>
+                            <td class="small text-danger fw-semibold" style="max-width: 250px;">
+                                <i class="fa-solid fa-circle-exclamation me-1"></i> {{ esc.escalation_reason }}
+                            </td>
+                            <td class="small text-muted">{{ esc.escalated_at or 'Auto-Triggered' }}</td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="{{ url_for('item_detail', item_id=esc.id) }}" class="btn btn-sm btn-su-primary">
+                                        Arbitrate Case
+                                    </a>
+                                    <form method="POST" action="{{ url_for('admin_de_escalate_item', item_id=esc.id) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary" title="Resolve Escalation">
+                                            Clear Flag
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="fa-solid fa-circle-check text-success fa-3x mb-2"></i>
+                                <h6>No escalated cases in the security queue</h6>
+                                <p class="small">Items unresolved over 7 days are automatically routed here for proctorial escalation.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

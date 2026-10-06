@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin AI Match Verification | Sanskriti Portal{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-warning text-dark font-monospace text-uppercase fw-bold">Authority Adjudication</span>
+                <span class="badge bg-primary font-monospace">ML Decision Support</span>
+            </div>
+            <h3 class="fw-bold mb-1 text-primary">
+                <i class="fa-solid fa-wand-magic-sparkles me-2"></i> AI Recommendation Verification Queue
+            </h3>
+            <p class="text-muted small mb-0">Adjudicate candidate matches surfaced by TF-IDF and OpenCV algorithms to confirm legitimate item pairings.</p>
+        </div>
+        <form method="POST" action="{{ url_for('run_ai_batch_matching') }}">
+            <button type="submit" class="btn btn-warning text-dark fw-bold btn-sm shadow-sm">
+                <i class="fa-solid fa-rotate me-1"></i> Re-Calculate All Matches
+            </button>
+        </form>
+    </div>
+
+    <!-- Match Verification Table -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0 text-dark">Suggested Asset Pairings</h5>
+            <span class="badge bg-light text-dark border">{{ matches|length }} Candidate Pairs</span>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small">
+                        <tr>
+                            <th>Pair ID</th>
+                            <th>Lost Item (Owner Report)</th>
+                            <th>Found Item (Custody)</th>
+                            <th>Similarity Metrics</th>
+                            <th>Status</th>
+                            <th>Authority Verification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for m in matches %}
+                        <tr>
+                            <td><span class="badge bg-light text-dark border font-monospace">#{{ m.id }}</span></td>
+                            <td>
+                                <div class="fw-bold text-danger">{{ m.lost_title }}</div>
+                                <div class="small text-muted">{{ m.lost_category }} &bull; {{ m.lost_location }}</div>
+                                <span class="badge bg-light text-dark border small font-monospace">#{{ m.lost_ticket }}</span>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-success">{{ m.found_title }}</div>
+                                <div class="small text-muted">{{ m.found_category }} &bull; Held: {{ m.found_storage or m.found_location }}</div>
+                                <span class="badge bg-light text-dark border small font-monospace">#{{ m.found_ticket }}</span>
+                            </td>
+                            <td style="min-width: 170px;">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <div class="progress flex-grow-1" style="height: 8px;">
+                                        <div class="progress-bar {% if m.composite_score >= 75 %}bg-success{% elif m.composite_score >= 50 %}bg-warning{% else %}bg-secondary{% endif %}" style="width: {{ m.composite_score }}%;"></div>
+                                    </div>
+                                    <strong class="small text-dark">{{ m.composite_score }}%</strong>
+                                </div>
+                                <div class="small text-muted" style="font-size: 0.72rem;">
+                                    Text: <strong>{{ (m.text_similarity_score * 100)|round(0) }}%</strong> &bull;
+                                    Cat: <strong>{{ (m.category_score * 100)|round(0) }}%</strong> &bull;
+                                    Loc: <strong>{{ (m.location_score * 100)|round(0) }}%</strong>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge {% if m.status == 'Confirmed' %}bg-success{% elif m.status == 'Dismissed' %}bg-secondary{% else %}bg-warning text-dark{% endif %}">
+                                    {{ m.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <form method="POST" action="{{ url_for('admin_confirm_match', match_id=m.id) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-success fw-bold" title="Confirm Match & Alert Owner">
+                                            <i class="fa-solid fa-check me-1"></i> Confirm
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('admin_dismiss_match', match_id=m.id) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Dismiss False Positive">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </button>
+                                    </form>
+                                    <a href="{{ url_for('item_matches_view', item_id=m.lost_item_id) }}" class="btn btn-sm btn-su-outline" title="Inspect">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="fa-solid fa-wand-magic-sparkles fa-3x mb-2 text-muted"></i>
+                                <h6>No AI matches waiting in the verification queue</h6>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}User Registration | Sanskriti Asset Portal{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header text-center py-4 text-white" style="background: linear-gradient(135deg, #001a38, #002147); border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+                    <div class="uni-crest-icon mx-auto mb-2" style="width: 50px; height: 50px;">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </div>
+                    <h4 class="fw-bold mb-1">Create Institutional Account</h4>
+                    <p class="small text-white-50 mb-0">Register with your Sanskriti University credentials for asset reporting & recovery</p>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form method="POST" action="{{ url_for('register') }}">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="regName" class="form-label fw-semibold">Full Legal Name <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-user"></i></span>
+                                    <input type="text" class="form-control" id="regName" name="name" placeholder="e.g. B. Mukesh" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="regEmail" class="form-label fw-semibold">Campus Email Address <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-envelope"></i></span>
+                                    <input type="email" class="form-control" id="regEmail" name="email" placeholder="student.name@sanskriti.edu.in" required>
+                                </div>
+                                <div class="form-text">Must be an authorized @sanskriti.edu.in address.</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="regIdNumber" class="form-label fw-semibold">Student / Staff Roll / Employee ID <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-id-badge"></i></span>
+                                    <input type="text" class="form-control" id="regIdNumber" name="id_number" placeholder="e.g. 2023-BTCS-042" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="regRole" class="form-label fw-semibold">Campus Role <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-user-gear"></i></span>
+                                    <select class="form-select" id="regRole" name="role" required>
+                                        <option value="student" selected>Student</option>
+                                        <option value="staff">Staff / Security Officer</option>
+                                        <option value="dept_head">Department Head (HOD)</option>
+                                        <option value="admin">Administrator / Dean</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="regDepartment" class="form-label fw-semibold">Department / Faculty <span class="text-danger">*</span></label>
+                                <select class="form-select" id="regDepartment" name="department" required>
+                                    <option value="" disabled selected>Select Department</option>
+                                    <option value="Computer Science & Engineering">Computer Science & Engineering</option>
+                                    <option value="Electronics & Communication">Electronics & Communication</option>
+                                    <option value="Mechanical Engineering">Mechanical Engineering</option>
+                                    <option value="Civil Engineering">Civil Engineering</option>
+                                    <option value="Electrical Engineering">Electrical Engineering</option>
+                                    <option value="Pharmacy & Chemical Sciences">Pharmacy & Chemical Sciences</option>
+                                    <option value="Central Library">Central Library</option>
+                                    <option value="Campus Administration & Security">Campus Administration & Security</option>
+                                    <option value="General Academics">General Academics</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="regPhone" class="form-label fw-semibold">Contact Phone Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-phone"></i></span>
+                                    <input type="text" class="form-control" id="regPhone" name="phone" placeholder="+91 98765 00000">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="regPassword" class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-key"></i></span>
+                                    <input type="password" class="form-control" id="regPassword" name="password" placeholder="Minimum 6 characters" required minlength="6">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="regConfirmPassword" class="form-label fw-semibold">Confirm Password <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-check-double"></i></span>
+                                    <input type="password" class="form-control" id="regConfirmPassword" name="confirm_password" placeholder="Re-enter password" required minlength="6">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check my-4">
+                            <input class="form-check-input" type="checkbox" id="termsCheck" required checked>
+                            <label class="form-check-label small text-muted" for="termsCheck">
+                                I verify that I am an active student, researcher, or staff member of Sanskriti University and agree to the institutional asset recovery policy.
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-su-primary w-100 py-2 fs-6 fw-bold shadow-sm">
+                            <i class="fa-solid fa-user-check me-2"></i> Register Account
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-4 pt-2 border-top">
+                        <span class="text-muted small">Already have a registered account?</span>
+                        <a href="{{ url_for('login') }}" class="text-decoration-none fw-bold text-primary small ms-1">Sign In</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

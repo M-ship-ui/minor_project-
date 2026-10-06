@@ -1,0 +1,15 @@
+{
+    "python.defaultInterpreterPath": "C:\\Users\\bandi\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "git.path": "C:\\Users\\bandi\\AppData\\Local\\Programs\\Git\\cmd\\git.exe",
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.pytest_cache": true
+    },
+    "workbench.colorCustomizations": {
+        "titleBar.activeBackground": "#002147",
+        "titleBar.activeForeground": "#ffffff",
+        "activityBar.background": "#001a38",
+        "activityBar.foreground": "#c99700"
+    }
+}

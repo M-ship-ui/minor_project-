@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Intelligent Academic Asset Recovery and Management System{% endblock %} | Sanskriti University</title>
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Custom Theme Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- 1. University Top Bar -->
+    <div class="su-topbar d-none d-md-block">
+        <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
+            <div>
+                <span class="fw-bold text-warning me-2"><i class="fa-solid fa-graduation-cap"></i> SANSKRITI UNIVERSITY</span>
+                <span class="text-white-50">| For Excellence in Life &bull; Academic Asset Recovery Cell</span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <span><i class="fa-solid fa-phone text-warning"></i> Campus Security: +91 98765 43210</span>
+                <span><i class="fa-solid fa-envelope text-warning"></i> recovery@sanskriti.edu.in</span>
+                <span class="badge bg-warning text-dark fw-bold">Academic Session 2026-27</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Main Navigation Bar -->
+    <nav class="navbar navbar-expand-lg su-navbar sticky-top">
+        <div class="container-fluid px-4">
+            <!-- Brand -->
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <div class="uni-crest-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <span class="university-tag">Sanskriti University</span>
+                    <span class="system-title">Academic Asset Recovery Portal</span>
+                </div>
+            </a>
+
+            <!-- Mobile Toggle -->
+            <button class="navbar-toggler text-white border-white" type="button" data-bs-toggle="collapse" data-bs-target="#suNavbarNav" aria-controls="suNavbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fa-solid fa-bars text-white"></i>
+            </button>
+
+            <!-- Navigation Links -->
+            <div class="collapse navbar-collapse" id="suNavbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">
+                            <i class="fa-solid fa-house me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'list_lost' %}active{% endif %}" href="{{ url_for('list_lost') }}">
+                            <i class="fa-solid fa-circle-question text-danger me-1"></i> Lost Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'list_found' %}active{% endif %}" href="{{ url_for('list_found') }}">
+                            <i class="fa-solid fa-circle-check text-success me-1"></i> Found Items
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link special-gold {% if request.endpoint == 'ai_matching_center' %}active{% endif %} ms-lg-1" href="{{ url_for('ai_matching_center') }}">
+                            <i class="fa-solid fa-microchip me-1"></i> AI Matcher
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'search_assets' %}active{% endif %}" href="{{ url_for('search_assets') }}">
+                            <i class="fa-solid fa-magnifying-glass me-1"></i> Search
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'institutional_assets' %}active{% endif %}" href="{{ url_for('institutional_assets') }}">
+                            <i class="fa-solid fa-boxes-stacked me-1"></i> Campus Inventory
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'recovery_history' %}active{% endif %}" href="{{ url_for('recovery_history') }}">
+                            <i class="fa-solid fa-clock-rotate-left me-1"></i> Recovery Ledger
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'reports_statistics' %}active{% endif %}" href="{{ url_for('reports_statistics') }}">
+                            <i class="fa-solid fa-chart-pie me-1"></i> Analytics
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Action Buttons & User Menu -->
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    {% if current_user %}
+                        <!-- Quick Report Action Buttons -->
+                        <a href="{{ url_for('report_lost') }}" class="btn btn-sm btn-danger d-flex align-items-center gap-1 shadow-sm">
+                            <i class="fa-solid fa-plus"></i> Report Lost
+                        </a>
+                        <a href="{{ url_for('report_found') }}" class="btn btn-sm btn-success d-flex align-items-center gap-1 shadow-sm">
+                            <i class="fa-solid fa-plus"></i> Report Found
+                        </a>
+
+                        <!-- Notifications Bell -->
+                        <div class="position-relative me-2">
+                            <a href="{{ url_for('notifications_view') }}" class="btn btn-outline-light btn-sm rounded-circle px-2" title="Notifications">
+                                <i class="fa-solid fa-bell"></i>
+                                {% if unread_notifs_count > 0 %}
+                                    <span class="notif-badge">{{ unread_notifs_count }}</span>
+                                {% endif %}
+                            </a>
+                        </div>
+
+                        <!-- User Profile Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-light btn-sm dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-user-circle fs-6 text-warning"></i>
+                                <span class="fw-semibold">{{ current_user.name.split()[0] }}</span>
+                                <span class="badge bg-warning text-dark text-uppercase font-monospace" style="font-size: 0.68rem;">{{ current_user.role }}</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0">
+                                <li class="px-3 py-2 border-bottom">
+                                    <div class="fw-bold text-dark">{{ current_user.name }}</div>
+                                    <div class="small text-muted">{{ current_user.email }}</div>
+                                    <div class="small text-muted"><span class="badge bg-secondary">{{ current_user.department }}</span></div>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2" href="{{ url_for('profile') }}">
+                                        <i class="fa-solid fa-id-card-clip text-primary me-2"></i> My Profile & Tickets
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2" href="{{ url_for('manage_claims') }}">
+                                        <i class="fa-solid fa-file-shield text-success me-2"></i> Claims & Ownership
+                                    </a>
+                                </li>
+                                {% if current_user.role in ['admin', 'dept_head', 'staff'] %}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li class="dropdown-header text-uppercase font-monospace text-primary fw-bold">Authority Console</li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ url_for('admin_dashboard') }}">
+                                            <i class="fa-solid fa-gauge-high text-danger me-2"></i> Authority Dashboard
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ url_for('admin_lost_found') }}">
+                                            <i class="fa-solid fa-list-check text-info me-2"></i> Moderate Lost & Found
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ url_for('admin_ai_verification') }}">
+                                            <i class="fa-solid fa-wand-magic-sparkles text-warning me-2"></i> AI Match Verification
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ url_for('admin_assets') }}">
+                                            <i class="fa-solid fa-laptop-file text-secondary me-2"></i> Institutional Asset Registry
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ url_for('admin_escalations') }}">
+                                            <i class="fa-solid fa-triangle-exclamation text-danger me-2"></i> Escalated Tickets
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ url_for('admin_audit_logs') }}">
+                                            <i class="fa-solid fa-shield-virus text-muted me-2"></i> Audit Trails
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item py-2 text-danger" href="{{ url_for('logout') }}">
+                                        <i class="fa-solid fa-right-from-bracket me-2"></i> Sign Out
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-sm px-3">
+                            <i class="fa-solid fa-right-to-bracket me-1"></i> Sign In
+                        </a>
+                        <a href="{{ url_for('register') }}" class="btn btn-warning btn-sm px-3 fw-semibold">
+                            <i class="fa-solid fa-user-plus me-1"></i> Register
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 3. Flash Alert Messages -->
+    <div class="container-fluid px-4 mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show alert-auto-dismiss shadow-sm d-flex align-items-center gap-2" role="alert">
+                        {% if category == 'success' %}
+                            <i class="fa-solid fa-circle-check fs-5 text-success"></i>
+                        {% elif category == 'danger' or category == 'error' %}
+                            <i class="fa-solid fa-circle-xmark fs-5 text-danger"></i>
+                        {% elif category == 'warning' %}
+                            <i class="fa-solid fa-triangle-exclamation fs-5 text-warning"></i>
+                        {% else %}
+                            <i class="fa-solid fa-circle-info fs-5 text-info"></i>
+                        {% endif %}
+                        <div class="flex-grow-1">{{ message }}</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- 4. Main Body Content -->
+    <main class="flex-grow-1 py-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- 5. University Footer -->
+    <footer class="su-footer">
+        <div class="container-fluid px-4">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <div class="uni-crest-icon" style="width:36px; height:36px; font-size:1rem;">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h6 class="text-white mb-0 fw-bold">SANSKRITI UNIVERSITY</h6>
+                    </div>
+                    <p class="small text-secondary mb-2">
+                        Intelligent Academic Asset Recovery and Management System is an institutional platform designed to log, match via AI/ML, and securely recover misplaced campus equipment, student valuables, and lab assets.
+                    </p>
+                    <div class="small text-secondary">
+                        <strong>Student:</strong> B. Mukesh &bull; <strong>Faculty Guide:</strong> Dr. Sakuldeep Singh
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 col-6">
+                    <h6 class="text-white fw-bold mb-3">Quick Links</h6>
+                    <ul class="list-unstyled small d-flex flex-column gap-2">
+                        <li><a href="{{ url_for('index') }}"><i class="fa-solid fa-angle-right me-1 text-warning"></i> Home Dashboard</a></li>
+                        <li><a href="{{ url_for('report_lost') }}"><i class="fa-solid fa-angle-right me-1 text-warning"></i> Report Lost</a></li>
+                        <li><a href="{{ url_for('report_found') }}"><i class="fa-solid fa-angle-right me-1 text-warning"></i> Report Found</a></li>
+                        <li><a href="{{ url_for('ai_matching_center') }}"><i class="fa-solid fa-angle-right me-1 text-warning"></i> AI Match Engine</a></li>
+                        <li><a href="{{ url_for('search_assets') }}"><i class="fa-solid fa-angle-right me-1 text-warning"></i> Search Registry</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 col-6">
+                    <h6 class="text-white fw-bold mb-3">Campus Infrastructure</h6>
+                    <ul class="list-unstyled small d-flex flex-column gap-2">
+                        <li><a href="{{ url_for('institutional_assets') }}"><i class="fa-solid fa-angle-right me-1 text-warning"></i> Department Inventory</a></li>
+                        <li><a href="{{ url_for('recovery_history') }}"><i class="fa-solid fa-angle-right me-1 text-warning"></i> Verified Recovery Ledger</a></li>
+                        <li><a href="{{ url_for('reports_statistics') }}"><i class="fa-solid fa-angle-right me-1 text-warning"></i> Monthly Analytics</a></li>
+                        <li><a href="{{ url_for('email_logs_view') }}"><i class="fa-solid fa-angle-right me-1 text-warning"></i> Campus Email Log</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white fw-bold mb-3">Campus Security Desks</h6>
+                    <p class="small text-secondary mb-1">
+                        <i class="fa-solid fa-location-dot text-warning me-2"></i> Main Gate Security Control Post 1<br>
+                        <i class="fa-solid fa-location-dot text-warning me-2"></i> Central Library 1st Floor Helpdesk<br>
+                        <i class="fa-solid fa-location-dot text-warning me-2"></i> Student Activity Center Room 102
+                    </p>
+                    <p class="small text-secondary mt-2">
+                        <i class="fa-solid fa-shield-cat text-warning me-2"></i> In emergency, contact Campus Proctorial Board.
+                    </p>
+                </div>
+            </div>
+            <hr class="border-secondary my-3 opacity-25">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-secondary">
+                <div>&copy; 2026 Sanskriti University. All Academic Rights Reserved.</div>
+                <div>Engineered with Python Flask &bull; SQLite &bull; scikit-learn &bull; OpenCV</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom Application JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

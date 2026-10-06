@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Match Results for {{ target_item.title }} | Sanskriti Portal{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Breadcrumb & Back -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="{{ url_for('ai_matching_center') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left me-1"></i> Back to AI Center
+        </a>
+        <span class="badge bg-light text-dark border font-monospace">Target Ticket: {{ target_item.ticket_number }}</span>
+    </div>
+
+    <!-- Target Item Focus Banner -->
+    <div class="card border-0 shadow-sm mb-4" style="background: linear-gradient(135deg, #001a38, #002147); color: white;">
+        <div class="card-body p-4">
+            <div class="row align-items-center">
+                <div class="col-md-2 text-center">
+                    {% if target_item.image_path %}
+                        <img src="{{ url_for('static', filename='uploads/' + target_item.image_path) }}" class="img-fluid rounded border shadow-sm" style="max-height: 110px; object-fit: cover;" alt="{{ target_item.title }}">
+                    {% else %}
+                        <div class="p-3 bg-secondary bg-opacity-25 rounded text-center">
+                            <i class="fa-solid fa-box-open fa-3x text-white-50"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-10">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="badge {% if target_item.type == 'lost' %}bg-danger{% else %}bg-success{% endif %} text-uppercase font-monospace">
+                            Target {{ target_item.type }} Item
+                        </span>
+                        <span class="badge bg-warning text-dark">{{ target_item.category }}</span>
+                        <span class="badge bg-light text-dark">{{ target_item.status }}</span>
+                    </div>
+                    <h4 class="fw-bold mb-1">{{ target_item.title }}</h4>
+                    <p class="small text-white-50 mb-2">{{ target_item.description }}</p>
+                    <div class="small text-white-50 d-flex flex-wrap gap-3">
+                        <span><i class="fa-solid fa-location-dot text-danger me-1"></i> {{ target_item.location }} ({{ target_item.building_zone }})</span>
+                        <span><i class="fa-solid fa-calendar me-1 text-warning"></i> Event Date: {{ target_item.date_event }}</span>
+                        <span><i class="fa-solid fa-fingerprint me-1 text-info"></i> Marks: {{ target_item.identifying_marks or 'N/A' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Candidate Matches Heading -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold text-dark mb-0">
+            <i class="fa-solid fa-wand-magic-sparkles text-warning me-2"></i> Ranked Candidate Matches ({{ candidates|length }})
+        </h4>
+        <span class="small text-muted">Evaluated via TF-IDF Vectorizer &amp; HSV Histogram Correlation</span>
+    </div>
+
+    <!-- Candidates List -->
+    <div class="row g-4">
+        {% for cand in candidates %}
+        <div class="col-lg-6">
+            <div class="card h-100 shadow-sm border {% if cand.composite_score >= 75 %}border-success{% elif cand.composite_score >= 50 %}border-warning{% endif %}">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+                    <div>
+                        <span class="badge {% if cand.composite_score >= 75 %}bg-success{% elif cand.composite_score >= 50 %}bg-warning text-dark{% else %}bg-secondary{% endif %} fs-6 fw-bold">
+                            {{ cand.composite_score }}% Match
+                        </span>
+                        <span class="badge bg-light text-dark border ms-1 font-monospace">#{{ cand.item.ticket_number }}</span>
+                    </div>
+                    <span class="badge {% if cand.item.status == 'Found' %}badge-found{% else %}badge-under-claim{% endif %}">
+                        {{ cand.item.status }}
+                    </span>
+                </div>
+
+                <div class="card-body p-3">
+                    <div class="row g-3">
+                        <div class="col-4 text-center">
+                            {% if cand.item.image_path %}
+                                <img src="{{ url_for('static', filename='uploads/' + cand.item.image_path) }}" class="img-fluid rounded shadow-sm mb-2" style="height: 120px; width: 100%; object-fit: cover;" alt="{{ cand.item.title }}">
+                            {% else %}
+                                <div class="p-3 bg-light rounded text-center mb-2" style="height: 120px;">
+                                    <i class="fa-solid fa-box-archive fa-3x text-muted mt-2"></i>
+                                </div>
+                            {% endif %}
+                            <div class="small fw-semibold text-success"><i class="fa-solid fa-building-shield me-1"></i> Held At:</div>
+                            <div class="small text-muted text-truncate" title="{{ cand.item.storage_location or cand.item.location }}">{{ cand.item.storage_location or cand.item.location }}</div>
+                        </div>
+
+                        <div class="col-8">
+                            <h5 class="fw-bold text-dark mb-1">{{ cand.item.title }}</h5>
+                            <span class="badge bg-secondary mb-2" style="font-size: 0.72rem;">{{ cand.item.category }}</span>
+                            <p class="small text-muted mb-2 text-truncate-3" style="display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;">
+                                {{ cand.item.description }}
+                            </p>
+                            <div class="small text-secondary mb-2">
+                                <div><i class="fa-solid fa-location-dot text-danger me-1"></i> Found at: {{ cand.item.location }}</div>
+                                <div><i class="fa-solid fa-calendar me-1"></i> Found on: {{ cand.item.date_event }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Breakdown Meters -->
+                    <div class="p-3 bg-light rounded mt-3 border">
+                        <div class="small fw-bold text-dark mb-2">Feature Similarity Breakdown</div>
+                        <div class="row g-2 text-center small">
+                            <div class="col-3">
+                                <span class="text-muted d-block" style="font-size: 0.7rem;">TF-IDF Text</span>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-primary" style="width: {{ cand.text_score * 100 }}%;"></div>
+                                </div>
+                                <span class="fw-bold text-primary">{{ (cand.text_score * 100)|round(1) }}%</span>
+                            </div>
+                            <div class="col-3">
+                                <span class="text-muted d-block" style="font-size: 0.7rem;">Category</span>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: {{ cand.cat_score * 100 }}%;"></div>
+                                </div>
+                                <span class="fw-bold text-success">{{ (cand.cat_score * 100)|round(0) }}%</span>
+                            </div>
+                            <div class="col-3">
+                                <span class="text-muted d-block" style="font-size: 0.7rem;">Location</span>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-info" style="width: {{ cand.loc_score * 100 }}%;"></div>
+                                </div>
+                                <span class="fw-bold text-info">{{ (cand.loc_score * 100)|round(0) }}%</span>
+                            </div>
+                            <div class="col-3">
+                                <span class="text-muted d-block" style="font-size: 0.7rem;">Visual CV</span>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-warning" style="width: {{ (cand.vis_score or 0.0) * 100 }}%;"></div>
+                                </div>
+                                <span class="fw-bold text-warning">{{ ((cand.vis_score or 0.0) * 100)|round(0) }}%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                        <a href="{{ url_for('item_detail', item_id=cand.item.id) }}" class="btn btn-sm btn-outline-secondary">
+                            Full Item Spec
+                        </a>
+                        {% if target_item.type == 'lost' and cand.item.status == 'Found' %}
+                            <a href="{{ url_for('submit_claim', item_id=cand.item.id) }}" class="btn btn-sm btn-su-primary fw-bold">
+                                <i class="fa-solid fa-file-signature me-1"></i> Claim This Item
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center py-5">
+            <div class="p-5 bg-white rounded shadow-sm">
+                <i class="fa-solid fa-circle-nodes fa-3x text-muted mb-3"></i>
+                <h5>No candidates currently meet match threshold</h5>
+                <p class="text-muted small">New found items are automatically evaluated when reported to campus desks.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

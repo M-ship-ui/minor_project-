@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Intelligent Matching Center | Sanskriti University{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Header with Action -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-warning text-dark font-monospace text-uppercase fw-bold">NLP TF-IDF & OpenCV Engine</span>
+                <span class="badge bg-success font-monospace">scikit-learn 1.8</span>
+            </div>
+            <h3 class="fw-bold mb-1 text-primary">
+                <i class="fa-solid fa-microchip me-2"></i> AI Intelligent Asset Matching Hub
+            </h3>
+            <p class="text-muted small mb-0">
+                Automated multi-parameter cross-referencing between active lost reports and campus found inventories using TF-IDF text vectorization, spatial proximity, and computer vision histograms.
+            </p>
+        </div>
+        <div>
+            <form method="POST" action="{{ url_for('run_ai_batch_matching') }}">
+                <button type="submit" class="btn btn-warning text-dark fw-bold px-3 py-2 shadow-sm d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-rotate text-dark"></i> Run Real-Time AI Cross-Scan
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- AI Engine Formula Explainer Card -->
+    <div class="card border-0 shadow-sm mb-4" style="background: linear-gradient(135deg, #001a38, #002147); color: white;">
+        <div class="card-body p-4">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <h5 class="fw-bold text-warning mb-2"><i class="fa-solid fa-calculator me-2"></i> Composite Matching Formula</h5>
+                    <p class="small text-white-50 mb-3">
+                        The recommendation engine computes a normalized weighted composite score across 5 feature dimensions:
+                    </p>
+                    <div class="d-flex flex-wrap gap-2 small">
+                        <span class="badge bg-light text-dark p-2 border"><strong>45%</strong> TF-IDF Description Cosine Sim</span>
+                        <span class="badge bg-light text-dark p-2 border"><strong>25%</strong> Category Taxonomy Match</span>
+                        <span class="badge bg-light text-dark p-2 border"><strong>15%</strong> Building & Spatial Proximity</span>
+                        <span class="badge bg-light text-dark p-2 border"><strong>10%</strong> OpenCV HSV Color Histogram</span>
+                        <span class="badge bg-light text-dark p-2 border"><strong>5%</strong> Temporal Date Proximity</span>
+                    </div>
+                </div>
+                <div class="col-lg-5 text-center mt-3 mt-lg-0 border-start border-white-50 ps-lg-4">
+                    <div class="row text-center g-2">
+                        <div class="col-4">
+                            <h3 class="fw-bold text-warning mb-0">{{ matches|selectattr('composite_score', 'ge', 75)|list|length }}</h3>
+                            <span class="small text-white-50">High Matches (&ge;75%)</span>
+                        </div>
+                        <div class="col-4">
+                            <h3 class="fw-bold text-info mb-0">{{ matches|selectattr('composite_score', 'ge', 50)|list|length }}</h3>
+                            <span class="small text-white-50">Moderate Matches</span>
+                        </div>
+                        <div class="col-4">
+                            <h3 class="fw-bold text-white mb-0">{{ matches|length }}</h3>
+                            <span class="small text-white-50">Total Candidates</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Candidate Matches Grid -->
+    <div class="row g-4">
+        {% for match in matches %}
+        <div class="col-xl-6">
+            <div class="card shadow-sm border h-100">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge {% if match.composite_score >= 75 %}bg-success{% elif match.composite_score >= 50 %}bg-warning text-dark{% else %}bg-secondary{% endif %} fw-bold px-2 py-1">
+                            {{ match.composite_score }}% Match Confidence
+                        </span>
+                        <span class="badge bg-light text-dark border">{{ match.status }}</span>
+                    </div>
+                    <span class="small text-muted font-monospace">Pair #{{ match.id }}</span>
+                </div>
+
+                <div class="card-body p-3">
+                    <div class="row g-3 align-items-center">
+                        <!-- Lost Item Left Column -->
+                        <div class="col-5">
+                            <div class="p-2 rounded bg-light border text-center h-100">
+                                <span class="badge bg-danger text-uppercase mb-2 font-monospace" style="font-size: 0.65rem;">Lost Item</span>
+                                {% if match.lost_image %}
+                                    <img src="{{ url_for('static', filename='uploads/' + match.lost_image) }}" class="img-fluid rounded mb-2 shadow-sm" style="height: 100px; width: 100%; object-fit: cover;" alt="Lost">
+                                {% else %}
+                                    <div class="rounded bg-white border d-flex align-items-center justify-content-center text-muted mb-2" style="height: 100px;">
+                                        <i class="fa-solid fa-box-open fa-2x"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="fw-bold text-dark small text-truncate" title="{{ match.lost_title }}">{{ match.lost_title }}</div>
+                                <div class="text-muted small text-truncate">{{ match.lost_location }}</div>
+                                <span class="badge bg-secondary mt-1" style="font-size: 0.68rem;">{{ match.lost_category }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Center AI Gauge -->
+                        <div class="col-2 text-center px-0">
+                            <div class="text-warning fs-3 mb-1"><i class="fa-solid fa-arrows-split-up-and-left fa-rotate-90"></i></div>
+                            <div class="fw-bold fs-5 text-dark">{{ match.composite_score }}%</div>
+                            <span class="small text-muted" style="font-size: 0.65rem;">Similarity</span>
+                        </div>
+
+                        <!-- Found Item Right Column -->
+                        <div class="col-5">
+                            <div class="p-2 rounded bg-light border text-center h-100">
+                                <span class="badge bg-success text-uppercase mb-2 font-monospace" style="font-size: 0.65rem;">Found Item</span>
+                                {% if match.found_image %}
+                                    <img src="{{ url_for('static', filename='uploads/' + match.found_image) }}" class="img-fluid rounded mb-2 shadow-sm" style="height: 100px; width: 100%; object-fit: cover;" alt="Found">
+                                {% else %}
+                                    <div class="rounded bg-white border d-flex align-items-center justify-content-center text-muted mb-2" style="height: 100px;">
+                                        <i class="fa-solid fa-box-archive fa-2x"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="fw-bold text-dark small text-truncate" title="{{ match.found_title }}">{{ match.found_title }}</div>
+                                <div class="text-muted small text-truncate">{{ match.found_storage or match.found_location }}</div>
+                                <span class="badge bg-secondary mt-1" style="font-size: 0.68rem;">{{ match.found_category }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Component Breakdown Bars -->
+                    <div class="p-2 rounded bg-light border mt-3 small">
+                        <div class="row g-2 text-center" style="font-size: 0.72rem;">
+                            <div class="col-3">
+                                <span class="text-muted d-block">TF-IDF Text</span>
+                                <strong class="text-primary">{{ (match.text_similarity_score * 100)|round(1) }}%</strong>
+                            </div>
+                            <div class="col-3">
+                                <span class="text-muted d-block">Category</span>
+                                <strong class="text-success">{{ (match.category_score * 100)|round(0) }}%</strong>
+                            </div>
+                            <div class="col-3">
+                                <span class="text-muted d-block">Location</span>
+                                <strong class="text-info">{{ (match.location_score * 100)|round(0) }}%</strong>
+                            </div>
+                            <div class="col-3">
+                                <span class="text-muted d-block">Visual Vision</span>
+                                <strong class="text-warning">{{ (match.visual_score * 100)|round(0) }}%</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                        <a href="{{ url_for('item_matches_view', item_id=match.lost_item_id) }}" class="btn btn-sm btn-su-outline">
+                            Deep Inspection
+                        </a>
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('submit_claim', item_id=match.found_item_id) }}" class="btn btn-sm btn-su-primary">
+                                Initiate Claim
+                            </a>
+                            {% if current_user and current_user.role in ['admin', 'staff'] %}
+                            <form method="POST" action="{{ url_for('admin_confirm_match', match_id=match.id) }}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-success" title="Verify as Authentic Match">
+                                    <i class="fa-solid fa-check"></i> Verify
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center py-5">
+            <div class="p-5 bg-white rounded shadow-sm">
+                <i class="fa-solid fa-microchip fa-3x text-muted mb-3"></i>
+                <h5>No AI matches currently computed</h5>
+                <p class="text-muted small">Click "Run Real-Time AI Cross-Scan" above to execute the NLP matching pipeline.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

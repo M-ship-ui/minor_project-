@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Report Found Academic Asset | Sanskriti University{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card shadow-md border-0 rounded-4">
+                <div class="card-header text-white p-4" style="background: linear-gradient(135deg, #065f46, #047857); border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="uni-crest-icon" style="background: rgba(255, 255, 255, 0.15); border-color: #a7f3d0; color: #ffffff;">
+                            <i class="fa-solid fa-hand-holding-heart"></i>
+                        </div>
+                        <div>
+                            <span class="badge bg-warning text-dark font-monospace text-uppercase mb-1">Found Asset Registration</span>
+                            <h4 class="fw-bold mb-0">Report Found Asset / Misplaced Property</h4>
+                            <p class="small text-white-50 mb-0">Help a fellow student or department recover their property. The AI matching system scans lost tickets automatically.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form method="POST" action="{{ url_for('report_found') }}" enctype="multipart/form-data">
+                        <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                            <i class="fa-solid fa-tag text-success me-2"></i> Found Item Specifications
+                        </h5>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-8">
+                                <label for="itemTitle" class="form-label fw-semibold">Item Name / Summary <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="itemTitle" name="title" placeholder="e.g. Dell XPS 15 Silver Laptop" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="itemCategory" class="form-label fw-semibold">Asset Category <span class="text-danger">*</span></label>
+                                <select class="form-select" id="itemCategory" name="category" required>
+                                    <option value="" disabled selected>Select Category</option>
+                                    <option value="Laptops">Laptops</option>
+                                    <option value="Projectors">Projectors</option>
+                                    <option value="Books">Books / Study Material</option>
+                                    <option value="ID Cards">ID Cards & Smart Badges</option>
+                                    <option value="Laboratory Equipment">Laboratory Equipment</option>
+                                    <option value="Electronic Devices">Electronic Devices & Gadgets</option>
+                                    <option value="Project Equipment">Project / Research Kits</option>
+                                    <option value="Other University Assets">Other University Assets</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="itemDescription" class="form-label fw-semibold">Detailed Description <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="itemDescription" name="description" rows="3" placeholder="Provide accurate visual details, physical state, color, observable labels, and condition." required minlength="10"></textarea>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="serialHint" class="form-label fw-semibold">Visible Serial / Model Hint</label>
+                                <input type="text" class="form-control" id="serialHint" name="serial_number_hint" placeholder="e.g. DLXPS-***** or obscured">
+                                <div class="form-text">Note: Hide full serial to prevent false ownership claims.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="identifyingMarks" class="form-label fw-semibold">Distinguishing Marks / Distinct Features</label>
+                                <input type="text" class="form-control" id="identifyingMarks" name="identifying_marks" placeholder="e.g. Sticker on lid, carbon fiber finish">
+                            </div>
+                        </div>
+
+                        <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                            <i class="fa-solid fa-location-dot text-success me-2"></i> Discovery Location & Secure Storage
+                        </h5>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label for="buildingZone" class="form-label fw-semibold">Campus Zone Where Found <span class="text-danger">*</span></label>
+                                <select class="form-select" id="buildingZone" name="building_zone" required>
+                                    <option value="" disabled selected>Select Campus Zone</option>
+                                    <option value="Central Library">Central Library</option>
+                                    <option value="Academic Block A">Academic Block A</option>
+                                    <option value="Academic Block B">Academic Block B</option>
+                                    <option value="Academic Block C">Academic Block C</option>
+                                    <option value="Science Complex">Science Complex & Labs</option>
+                                    <option value="Student Activity Center">Student Activity Center (SAC)</option>
+                                    <option value="Main Auditorium">Main Auditorium Hall</option>
+                                    <option value="Sports Complex">Sports Complex & Gymnasium</option>
+                                    <option value="Hostel Area">Hostel Blocks</option>
+                                    <option value="Main Gate">Main Gate & Parking</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="specificLocation" class="form-label fw-semibold">Specific Spot Where Found <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="specificLocation" name="location" placeholder="e.g. Study desk 14 near 2nd floor window" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="deptSelect" class="form-label fw-semibold">Associated Department</label>
+                                <select class="form-select" id="deptSelect" name="department" required>
+                                    <option value="Central Library">Central Library</option>
+                                    <option value="Campus Administration & Security" selected>Campus Security Desk</option>
+                                    <option value="Computer Science & Engineering">Computer Science & Engineering</option>
+                                    <option value="Electronics & Communication">Electronics & Communication</option>
+                                    <option value="General Campus">General Campus</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="storageLocation" class="form-label fw-semibold">Current Secure Custody / Storage Desk <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="storageLocation" name="storage_location" placeholder="e.g. Central Library Front Desk Locker 3B or Main Gate Security" required>
+                                <div class="form-text">Where the legitimate owner must report to collect the item.</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="dateEvent" class="form-label fw-semibold">Date Found <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="dateEvent" name="date_event" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="timeEvent" class="form-label fw-semibold">Time Found</label>
+                                <input type="time" class="form-control" id="timeEvent" name="time_event">
+                            </div>
+                        </div>
+
+                        <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                            <i class="fa-solid fa-camera text-success me-2"></i> Photo & Finder Confidentiality
+                        </h5>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-7">
+                                <label for="itemImageInput" class="form-label fw-semibold">Upload Photo of Found Asset</label>
+                                <input class="form-control" type="file" id="itemImageInput" name="image" accept="image/png, image/jpeg, image/jpg, image/webp">
+                                <div class="form-text">Assists owners in quick visual identification.</div>
+                            </div>
+                            <div class="col-md-5">
+                                <div id="imagePreviewContainer" class="d-none text-center p-2 border rounded bg-light">
+                                    <span class="small text-muted d-block mb-1">Image Preview</span>
+                                    <img id="previewImg" src="#" alt="Preview" class="img-fluid rounded" style="max-height: 120px; object-fit: contain;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Anonymous Toggle -->
+                        <div class="p-3 rounded-3 bg-light border mb-4">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="isAnonymousCheckbox" name="is_anonymous" value="1">
+                                <label class="form-check-label fw-bold text-dark" for="isAnonymousCheckbox">
+                                    <i class="fa-solid fa-user-shield text-secondary me-1"></i> Register Anonymously as Good Samaritan Finder
+                                </label>
+                            </div>
+                            <p class="small text-muted mb-0">
+                                Your identity will not be publicized to applicants. Claimants will coordinate recovery exclusively via the designated security storage desk.
+                            </p>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-success btn-lg px-4 fw-bold shadow-sm">
+                                <i class="fa-solid fa-check-circle me-2"></i> Submit Found Asset Report
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

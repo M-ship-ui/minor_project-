@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Institutional Asset Registry | Sanskriti University{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <h3 class="fw-bold mb-1 text-primary">
+                <i class="fa-solid fa-boxes-stacked me-2"></i> Campus Institutional Asset Registry
+            </h3>
+            <p class="text-muted small mb-0">Authorized repository of university laboratory apparatus, audio-visual units, departmental laptops, and campus property.</p>
+        </div>
+        {% if current_user and current_user.role in ['admin', 'dept_head', 'staff'] %}
+        <div>
+            <a href="{{ url_for('admin_assets') }}" class="btn btn-su-primary shadow-sm fw-semibold">
+                <i class="fa-solid fa-plus me-1"></i> Manage Institutional Inventory
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Inventory Stat Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="card p-3 shadow-sm border-0">
+                <div class="small text-muted fw-bold text-uppercase">Total Registered Assets</div>
+                <div class="fs-3 fw-bold text-dark">{{ assets|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card p-3 shadow-sm border-0">
+                <div class="small text-muted fw-bold text-uppercase">Active In Service</div>
+                <div class="fs-3 fw-bold text-success">{{ assets|selectattr('status', 'equalto', 'Active')|list|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card p-3 shadow-sm border-0">
+                <div class="small text-muted fw-bold text-uppercase">Under Maintenance</div>
+                <div class="fs-3 fw-bold text-warning">{{ assets|selectattr('status', 'equalto', 'Under Maintenance')|list|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="card p-3 shadow-sm border-0">
+                <div class="small text-muted fw-bold text-uppercase">Reported Misplaced</div>
+                <div class="fs-3 fw-bold text-danger">{{ assets|selectattr('status', 'equalto', 'Reported Lost')|list|length }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assets Inventory Table -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0 text-dark">Institutional Asset Catalog</h5>
+            <span class="badge bg-light text-dark border">{{ assets|length }} Items Tagged</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small">
+                        <tr>
+                            <th>Asset Barcode / Tag</th>
+                            <th>Equipment Name & Specifications</th>
+                            <th>Category</th>
+                            <th>Assigned Department</th>
+                            <th>Current Campus Location</th>
+                            <th>Custodian</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ast in assets %}
+                        <tr>
+                            <td>
+                                <span class="badge bg-light text-dark border font-monospace fw-bold" style="letter-spacing: 0.5px;">
+                                    <i class="fa-solid fa-barcode text-primary me-1"></i> {{ ast.asset_tag }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark">{{ ast.name }}</div>
+                                <div class="small text-muted">{{ ast.model_specs or 'Standard Specification' }}</div>
+                                <div class="small font-monospace text-secondary">SN: {{ ast.serial_number }}</div>
+                            </td>
+                            <td><span class="badge bg-secondary">{{ ast.category }}</span></td>
+                            <td class="small">{{ ast.department }}</td>
+                            <td class="small"><i class="fa-solid fa-location-dot text-danger me-1"></i> {{ ast.current_location }}</td>
+                            <td class="small text-muted">{{ ast.assigned_to or 'General Lab Incharge' }}</td>
+                            <td>
+                                <span class="badge {% if ast.status == 'Active' %}bg-success{% elif ast.status == 'Under Maintenance' %}bg-warning text-dark{% elif ast.status == 'Reported Lost' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                    {{ ast.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

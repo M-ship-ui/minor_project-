@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block title %}Reports &amp; Analytics | Sanskriti Asset Portal{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <h3 class="fw-bold mb-1 text-primary">
+                <i class="fa-solid fa-chart-pie me-2"></i> Institutional Asset Analytics &amp; Reports
+            </h3>
+            <p class="text-muted small mb-0">Monthly recovery statistics, incident distribution by category, campus loss hotspots, and turnaround trends.</p>
+        </div>
+        <div>
+            <a href="{{ url_for('export_reports_csv') }}" class="btn btn-outline-success btn-sm fw-bold shadow-sm">
+                <i class="fa-solid fa-file-csv me-1"></i> Export Incident Report (CSV)
+            </a>
+        </div>
+    </div>
+
+    <!-- Analytics Key Metric Indicators -->
+    <div class="row g-3 mb-4">
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-3 shadow-sm border-0 stat-widget" style="background:#ffffff; border-left: 4px solid #002147 !important;">
+                <div class="stat-number" style="color: #002147;">{{ stats.total_items }}</div>
+                <div class="stat-label text-muted">Total Recorded Incidents</div>
+                <div class="small text-muted mt-1">Lost &amp; Found Combined</div>
+                <i class="fa-solid fa-database stat-icon text-primary"></i>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-3 shadow-sm border-0 stat-widget" style="background:#ffffff; border-left: 4px solid #10b981 !important;">
+                <div class="stat-number text-success">{{ stats.recovered_count }}</div>
+                <div class="stat-label text-muted">Successfully Restored</div>
+                <div class="small text-muted mt-1">{{ stats.recovery_rate }}% Success Ratio</div>
+                <i class="fa-solid fa-circle-check stat-icon text-success"></i>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-3 shadow-sm border-0 stat-widget" style="background:#ffffff; border-left: 4px solid #c99700 !important;">
+                <div class="stat-number text-warning">{{ stats.ai_matches_count }}</div>
+                <div class="stat-label text-muted">AI Matches Formed</div>
+                <div class="small text-muted mt-1">TF-IDF &amp; CV Assisted</div>
+                <i class="fa-solid fa-wand-magic-sparkles stat-icon text-warning"></i>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card p-3 shadow-sm border-0 stat-widget" style="background:#ffffff; border-left: 4px solid #6366f1 !important;">
+                <div class="stat-number text-indigo" style="color: #6366f1;">{{ avg_turnaround }} Days</div>
+                <div class="stat-label text-muted">Avg. Resolution Speed</div>
+                <div class="small text-muted mt-1">From Report to Handover</div>
+                <i class="fa-solid fa-bolt stat-icon text-info"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Visuals Row 1 -->
+    <div class="row g-4 mb-4">
+        <!-- Lost vs Found by Category -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark">Asset Distribution by Category (Lost vs Found)</h5>
+                    <span class="small text-muted">Volume Breakdown</span>
+                </div>
+                <div class="card-body p-3">
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="categoryBreakdownChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Campus Loss Hotspots -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark">High-Loss Campus Hotspots</h5>
+                    <span class="small text-muted">Building Zone Frequency</span>
+                </div>
+                <div class="card-body p-3">
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="campusHotspotsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Visuals Row 2 -->
+    <div class="row g-4 mb-4">
+        <!-- Monthly Recovery Trend -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark">Monthly Incident Volume &amp; Recovery Trend</h5>
+                    <span class="small text-muted">Academic Term 2026</span>
+                </div>
+                <div class="card-body p-3">
+                    <div style="height: 280px; position: relative;">
+                        <canvas id="recoveryTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lifecycle Status Doughnut -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark">Current Lifecycle States</h5>
+                    <span class="small text-muted">Proportion</span>
+                </div>
+                <div class="card-body p-3">
+                    <div style="height: 280px; position: relative;">
+                        <canvas id="statusDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hotspot Prevention Recommendations Table -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white py-3 border-bottom">
+            <h5 class="fw-bold mb-0 text-dark">
+                <i class="fa-solid fa-shield-halved text-warning me-2"></i> Campus Facilities Planning: Hotspot Vulnerability Insights
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 small">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Campus Zone</th>
+                            <th>Total Incidents Reported</th>
+                            <th>Dominant Item Category</th>
+                            <th>Recommended Administrative Mitigation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold text-dark">Central Library</td>
+                            <td>4</td>
+                            <td><span class="badge bg-secondary">Laptops &amp; Books</span></td>
+                            <td>Install anti-theft desk tether cables at 2nd floor reading cubicles and increase security desk rounds.</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-dark">Student Activity Center (SAC)</td>
+                            <td>3</td>
+                            <td><span class="badge bg-secondary">ID Cards &amp; Electronics</span></td>
+                            <td>Place prominent "Check Your Belongings" reminder posters at cafeteria exit and billing counters.</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-dark">Science Complex &amp; Labs</td>
+                            <td>3</td>
+                            <td><span class="badge bg-secondary">Laboratory Equipment</span></td>
+                            <td>Enforce mandatory laboratory equipment check-out log sheets before granting student lab clearance.</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-dark">Academic Block A</td>
+                            <td>2</td>
+                            <td><span class="badge bg-secondary">Calculators &amp; Notes</span></td>
+                            <td>Mandate exam invigilator post-session room sweeps in Examination Halls 3 &amp; 4.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const rawData = {
+        categories: {
+            labels: {{ cat_labels | tojson }},
+            lost_counts: {{ cat_lost_counts | tojson }},
+            found_counts: {{ cat_found_counts | tojson }}
+        },
+        hotspots: {
+            labels: {{ hotspot_labels | tojson }},
+            counts: {{ hotspot_counts | tojson }}
+        },
+        statuses: {
+            labels: ['Lost', 'Found', 'Under Claim', 'Verified', 'Returned', 'Closed'],
+            counts: [
+                {{ stats.active_lost }},
+                {{ stats.active_found }},
+                {{ stats.under_claim_count or 1 }},
+                {{ stats.verified_count or 1 }},
+                {{ stats.recovered_count }},
+                {{ stats.closed_count or 1 }}
+            ]
+        },
+        trends: {
+            months: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+            total_reports: [2, 3, 5, 8, 12, {{ stats.total_items }}],
+            recovered: [1, 2, 3, 5, 8, {{ stats.recovered_count }}]
+        }
+    };
+    initReportsCharts(rawData);
+});
+</script>
+{% endblock %}

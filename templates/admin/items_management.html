@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Lost &amp; Found Inventory | Sanskriti Portal{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <h3 class="fw-bold mb-1 text-primary">
+                <i class="fa-solid fa-list-check me-2"></i> Authority Lost &amp; Found Moderation
+            </h3>
+            <p class="text-muted small mb-0">Control campus ticket states, reassign custody lockers, inspect confidential notes, and moderate spam.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('report_found') }}" class="btn btn-sm btn-success fw-bold">
+                <i class="fa-solid fa-plus me-1"></i> Register Handed-In Item
+            </a>
+        </div>
+    </div>
+
+    <!-- Items Moderation Table -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0 text-dark">Master Property Registry</h5>
+            <span class="badge bg-light text-dark border">{{ items|length }} Total Reports</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small">
+                        <tr>
+                            <th>Ticket</th>
+                            <th>Item Details</th>
+                            <th>Type</th>
+                            <th>Reporter / Contact</th>
+                            <th>Custody / Location</th>
+                            <th>Status &amp; Lifecycle</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for itm in items %}
+                        <tr>
+                            <td>
+                                <span class="badge bg-light text-dark border font-monospace fw-bold">
+                                    {{ itm.ticket_number }}
+                                </span>
+                                {% if itm.escalated %}
+                                    <div class="mt-1"><span class="badge badge-escalated" style="font-size:0.65rem;">ESCALATED</span></div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark">{{ itm.title }}</div>
+                                <span class="badge bg-secondary" style="font-size: 0.68rem;">{{ itm.category }}</span>
+                                <span class="text-muted small">&bull; {{ itm.department }}</span>
+                            </td>
+                            <td>
+                                <span class="badge {% if itm.type == 'lost' %}bg-danger{% else %}bg-success{% endif %} text-uppercase font-monospace" style="font-size: 0.7rem;">
+                                    {{ itm.type }}
+                                </span>
+                            </td>
+                            <td class="small">
+                                {% if itm.is_anonymous %}
+                                    <span class="text-muted"><i class="fa-solid fa-user-secret me-1"></i> Anonymous</span>
+                                {% else %}
+                                    <div class="fw-semibold text-dark">{{ itm.reporter_name or 'University Member' }}</div>
+                                    <div class="text-muted font-monospace" style="font-size: 0.72rem;">{{ itm.reporter_contact }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="small">
+                                <div class="text-truncate" style="max-width: 170px;"><i class="fa-solid fa-location-dot text-danger me-1"></i> {{ itm.location }}</div>
+                                {% if itm.storage_location %}
+                                    <div class="text-success fw-bold text-truncate" style="max-width: 170px;"><i class="fa-solid fa-warehouse me-1"></i> {{ itm.storage_location }}</div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin_update_item_status', item_id=itm.id) }}" class="d-flex align-items-center gap-1">
+                                    <select name="status" class="form-select form-select-sm" style="font-size: 0.78rem; width: 110px;">
+                                        <option value="Lost" {% if itm.status == 'Lost' %}selected{% endif %}>Lost</option>
+                                        <option value="Found" {% if itm.status == 'Found' %}selected{% endif %}>Found</option>
+                                        <option value="Under Claim" {% if itm.status == 'Under Claim' %}selected{% endif %}>Under Claim</option>
+                                        <option value="Verified" {% if itm.status == 'Verified' %}selected{% endif %}>Verified</option>
+                                        <option value="Returned" {% if itm.status == 'Returned' %}selected{% endif %}>Returned</option>
+                                        <option value="Closed" {% if itm.status == 'Closed' %}selected{% endif %}>Closed</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-outline-dark" title="Save Status">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="{{ url_for('item_detail', item_id=itm.id) }}" class="btn btn-sm btn-outline-primary" title="Details">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    <a href="{{ url_for('item_matches_view', item_id=itm.id) }}" class="btn btn-sm btn-warning" title="AI Matches">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    </a>
+                                    <form method="POST" action="{{ url_for('admin_delete_item', item_id=itm.id) }}" class="d-inline" onsubmit="return confirm('Delete ticket #{{ itm.ticket_number }} from active inventory?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Spam">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

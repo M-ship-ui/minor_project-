@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ item.title }} | Sanskriti Asset Portal{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+    <!-- Breadcrumb & Back -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left me-1"></i> Back
+        </a>
+        <div class="font-monospace text-muted small">
+            Ticket: <span class="fw-bold text-dark">{{ item.ticket_number }}</span>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Main Details Column -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white p-3 d-flex justify-content-between align-items-center border-bottom">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge {% if item.type == 'lost' %}bg-danger{% else %}bg-success{% endif %} text-uppercase font-monospace">
+                            {{ item.type }} Item
+                        </span>
+                        <span class="badge bg-secondary">{{ item.category }}</span>
+                    </div>
+                    <div>
+                        <span class="badge {% if item.status == 'Lost' %}badge-lost{% elif item.status == 'Found' %}badge-found{% elif item.status == 'Returned' %}badge-returned{% else %}badge-under-claim{% endif %} fs-6">
+                            {{ item.status }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    <h3 class="fw-bold text-dark mb-2">{{ item.title }}</h3>
+
+                    <!-- Lifecycle Status Progress Bar -->
+                    <div class="p-3 bg-light rounded-3 mb-4 border">
+                        <div class="small fw-bold text-muted text-uppercase mb-2">Item Lifecycle State</div>
+                        <div class="d-flex justify-content-between text-center small position-relative">
+                            <div class="{% if item.status in ['Lost', 'Found', 'Under Claim', 'Verified', 'Returned', 'Closed'] %}text-primary fw-bold{% else %}text-muted{% endif %}">
+                                <i class="fa-solid fa-circle-dot"></i><br>Reported
+                            </div>
+                            <div class="{% if item.status in ['Under Claim', 'Verified', 'Returned', 'Closed'] %}text-warning fw-bold{% else %}text-muted{% endif %}">
+                                <i class="fa-solid fa-file-signature"></i><br>Under Claim
+                            </div>
+                            <div class="{% if item.status in ['Verified', 'Returned', 'Closed'] %}text-info fw-bold{% else %}text-muted{% endif %}">
+                                <i class="fa-solid fa-shield-check"></i><br>Verified
+                            </div>
+                            <div class="{% if item.status in ['Returned', 'Closed'] %}text-success fw-bold{% else %}text-muted{% endif %}">
+                                <i class="fa-solid fa-handshake"></i><br>Returned / Closed
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if item.image_path %}
+                    <div class="text-center mb-4 p-2 bg-light rounded border">
+                        <img src="{{ url_for('static', filename='uploads/' + item.image_path) }}" class="img-fluid rounded shadow-sm" style="max-height: 380px; object-fit: contain;" alt="{{ item.title }}">
+                    </div>
+                    {% endif %}
+
+                    <h5 class="fw-bold text-dark mb-2">Detailed Description</h5>
+                    <p class="text-secondary leading-relaxed mb-4" style="font-size: 1.05rem; white-space: pre-line;">{{ item.description }}</p>
+
+                    <!-- Specifications Table -->
+                    <h5 class="fw-bold text-dark mb-2">Specification & Verification Markers</h5>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered table-sm small">
+                            <tbody>
+                                <tr>
+                                    <th class="bg-light text-muted w-25">Campus Building / Zone</th>
+                                    <td>{{ item.building_zone }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light text-muted">Specific Location</th>
+                                    <td>{{ item.location }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light text-muted">Academic Department</th>
+                                    <td>{{ item.department }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light text-muted">Incident Date & Time</th>
+                                    <td>{{ item.date_event }} {% if item.time_event %}(approx. {{ item.time_event }}){% endif %}</td>
+                                </tr>
+                                {% if item.storage_location %}
+                                <tr>
+                                    <th class="bg-light text-muted">Storage / Custody Desk</th>
+                                    <td class="text-success fw-bold"><i class="fa-solid fa-building-shield me-1"></i> {{ item.storage_location }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <th class="bg-light text-muted">Identifying Marks</th>
+                                    <td>{{ item.identifying_marks or 'None recorded' }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light text-muted">Serial ID Hint</th>
+                                    <td class="font-monospace">{{ item.serial_number_hint or 'Kept in confidential escrow' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% if item.escalated %}
+                    <div class="alert alert-danger d-flex align-items-center gap-2 mb-4">
+                        <i class="fa-solid fa-triangle-exclamation fs-4"></i>
+                        <div>
+                            <strong>Escalated Item:</strong> {{ item.escalation_reason }}
+                            <div class="small">Assigned to Campus Security Authority queue.</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Actions & AI Suggestions -->
+        <div class="col-lg-4">
+            <!-- Action Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white fw-bold">
+                    <i class="fa-solid fa-bolt text-warning me-2"></i> Immediate Actions
+                </div>
+                <div class="card-body p-3">
+                    {% if item.type == 'found' and item.status == 'Found' %}
+                        <a href="{{ url_for('submit_claim', item_id=item.id) }}" class="btn btn-su-primary w-100 py-2 mb-2 fw-bold shadow-sm">
+                            <i class="fa-solid fa-file-signature me-1"></i> Submit Ownership Claim
+                        </a>
+                        <p class="small text-muted mb-0 text-center">
+                            You must provide proof or identifying details to verify legitimate ownership.
+                        </p>
+                    {% elif item.type == 'lost' %}
+                        <a href="{{ url_for('item_matches_view', item_id=item.id) }}" class="btn btn-warning w-100 py-2 mb-2 fw-bold text-dark shadow-sm">
+                            <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Run AI Match Engine
+                        </a>
+                        <p class="small text-muted mb-0 text-center">
+                            Cross-match this lost report against all found items in campus storage.
+                        </p>
+                    {% else %}
+                        <div class="alert alert-secondary mb-0 small text-center">
+                            This item is currently <strong>{{ item.status }}</strong>.
+                        </div>
+                    {% endif %}
+
+                    {% if current_user and current_user.role in ['admin', 'staff', 'dept_head'] %}
+                    <hr>
+                    <div class="small fw-bold text-muted text-uppercase mb-2">Authority Controls</div>
+                    <form method="POST" action="{{ url_for('admin_update_item_status', item_id=item.id) }}" class="d-flex gap-2">
+                        <select name="status" class="form-select form-select-sm">
+                            <option value="Lost" {% if item.status == 'Lost' %}selected{% endif %}>Lost</option>
+                            <option value="Found" {% if item.status == 'Found' %}selected{% endif %}>Found</option>
+                            <option value="Under Claim" {% if item.status == 'Under Claim' %}selected{% endif %}>Under Claim</option>
+                            <option value="Verified" {% if item.status == 'Verified' %}selected{% endif %}>Verified</option>
+                            <option value="Returned" {% if item.status == 'Returned' %}selected{% endif %}>Returned</option>
+                            <option value="Closed" {% if item.status == 'Closed' %}selected{% endif %}>Closed</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-outline-dark">Update</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Reporter Profile Escrow -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white fw-bold">
+                    <i class="fa-solid fa-user-shield text-primary me-2"></i> Reporter Confidentiality
+                </div>
+                <div class="card-body p-3 small">
+                    {% if item.is_anonymous %}
+                        <div class="p-2 bg-light rounded text-center mb-2">
+                            <i class="fa-solid fa-user-secret fa-2x text-muted mb-1"></i>
+                            <div class="fw-bold text-dark">Anonymous University Report</div>
+                            <span class="text-muted">Personal identity is obscured to protect student privacy.</span>
+                        </div>
+                    {% else %}
+                        <div class="mb-2">
+                            <span class="text-muted">Reporter Name:</span>
+                            <div class="fw-bold text-dark">{{ item.reporter_name or 'Registered University Member' }}</div>
+                        </div>
+                        {% if current_user and current_user.role in ['admin', 'staff'] %}
+                        <div class="mb-2">
+                            <span class="text-muted">Contact Info:</span>
+                            <div class="fw-semibold text-primary">{{ item.reporter_contact or 'Via University Portal' }}</div>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                    <div class="text-muted border-top pt-2">
+                        Registered: {{ item.created_at | format_dt }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Quick Matches Suggestion List -->
+            {% if suggested_matches %}
+            <div class="card shadow-sm border-warning">
+                <div class="card-header bg-warning bg-opacity-25 border-warning fw-bold text-dark">
+                    <i class="fa-solid fa-microchip text-warning me-2"></i> Suggested AI Matches
+                </div>
+                <div class="card-body p-2">
+                    <div class="list-group list-group-flush">
+                        {% for match in suggested_matches %}
+                        <a href="{{ url_for('item_detail', item_id=match.candidate_id) }}" class="list-group-item list-group-item-action p-2">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <strong class="small text-truncate" style="max-width: 170px;">{{ match.candidate_title }}</strong>
+                                <span class="badge {% if match.composite_score >= 70 %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                                    {{ match.composite_score }}%
+                                </span>
+                            </div>
+                            <div class="text-muted" style="font-size: 0.72rem;">
+                                <i class="fa-solid fa-location-dot me-1"></i> {{ match.candidate_location }}
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
