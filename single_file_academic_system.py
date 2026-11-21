@@ -27,6 +27,7 @@ import re
 import sqlite3
 import datetime
 from functools import wraps
+from jinja2 import DictLoader, ChoiceLoader
 from flask import (
     Flask, request, redirect, url_for, session, flash,
     render_template_string, jsonify, abort
@@ -489,6 +490,11 @@ BASE_LAYOUT = """
 </html>
 """
 
+app.jinja_loader = ChoiceLoader([
+    DictLoader({"base.html": BASE_LAYOUT}),
+    app.jinja_loader
+])
+
 # --------------------------------------------------------------------------------------
 # 5. CONTROLLER ROUTES & PAGE HANDLERS (Matching Report Figures 5.1.1 to 5.1.8)
 # --------------------------------------------------------------------------------------
@@ -516,7 +522,7 @@ def index():
     conn.close()
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <!-- Hero Banner with Sanskriti University Branding -->
     <div class="hero-banner shadow mb-4">
@@ -696,7 +702,7 @@ def index():
     {% endblock %}
     """
     return render_template_string(
-        content, base=BASE_LAYOUT, title="Home Page (Figure 5.1.2)",
+        content, title="Home Page (Figure 5.1.2)",
         lost_count=lost_count, found_count=found_count, matches_count=matches_count,
         recovered_count=recovered_count, recent_lost=recent_lost, recent_found=recent_found,
         top_matches=top_matches
@@ -726,7 +732,7 @@ def login():
             flash("Invalid email or password. Please use quick-fill buttons below for evaluation.", "danger")
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="row justify-content-center py-4">
         <div class="col-md-6 col-lg-5">
@@ -804,7 +810,7 @@ def login():
     </script>
     {% endblock %}
     """
-    return render_template_string(content, base=BASE_LAYOUT, title="Login Page (Figure 5.1.1)")
+    return render_template_string(content, title="Login Page (Figure 5.1.1)")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -836,7 +842,7 @@ def register():
         return redirect(url_for("login"))
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="row justify-content-center py-4">
         <div class="col-md-7 col-lg-6">
@@ -899,7 +905,7 @@ def register():
     </div>
     {% endblock %}
     """
-    return render_template_string(content, base=BASE_LAYOUT, title="Registration Page (Figure 5.1.1)")
+    return render_template_string(content, title="Registration Page (Figure 5.1.1)")
 
 @app.route("/logout")
 def logout():
@@ -961,7 +967,7 @@ def report_lost():
         return redirect(url_for("item_matches", item_id=new_id))
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="row justify-content-center py-3">
         <div class="col-lg-8">
@@ -1035,7 +1041,7 @@ def report_lost():
     </div>
     {% endblock %}
     """
-    return render_template_string(content, base=BASE_LAYOUT, title="Report Lost Item (Figure 5.1.3)")
+    return render_template_string(content, title="Report Lost Item (Figure 5.1.3)")
 
 @app.route("/report/found", methods=["GET", "POST"])
 @login_required
@@ -1076,7 +1082,7 @@ def report_found():
         return redirect(url_for("view_item", item_id=new_id))
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="row justify-content-center py-3">
         <div class="col-lg-8">
@@ -1136,7 +1142,7 @@ def report_found():
     </div>
     {% endblock %}
     """
-    return render_template_string(content, base=BASE_LAYOUT, title="Report Found Item (Figure 5.1.3)")
+    return render_template_string(content, title="Report Found Item (Figure 5.1.3)")
 
 # Figure 5.1.4: Search and Filter Page
 @app.route("/search")
@@ -1171,7 +1177,7 @@ def search():
     conn.close()
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-header bg-white py-3">
@@ -1253,7 +1259,7 @@ def search():
     </div>
     {% endblock %}
     """
-    return render_template_string(content, base=BASE_LAYOUT, title="Search & Filter (Figure 5.1.4)", results=results)
+    return render_template_string(content, title="Search & Filter (Figure 5.1.4)", results=results)
 
 # Figure 5.1.5: Match Suggestions Page
 @app.route("/ai/item/<int:item_id>/matches")
@@ -1288,7 +1294,7 @@ def item_matches(item_id):
     conn.close()
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-header bg-dark text-white py-3 d-flex justify-content-between align-items-center">
@@ -1360,7 +1366,7 @@ def item_matches(item_id):
     </div>
     {% endblock %}
     """
-    return render_template_string(content, base=BASE_LAYOUT, title="Match Suggestions (Figure 5.1.5)", target=target, matches=matches)
+    return render_template_string(content, title="Match Suggestions (Figure 5.1.5)", target=target, matches=matches)
 
 @app.route("/ai/matching-center")
 def ai_matching_center():
@@ -1377,7 +1383,7 @@ def ai_matching_center():
     conn.close()
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-header bg-dark text-white py-3">
@@ -1426,7 +1432,7 @@ def ai_matching_center():
     </div>
     {% endblock %}
     """
-    return render_template_string(content, base=BASE_LAYOUT, title="AI Matching Center", all_matches=all_matches)
+    return render_template_string(content, title="AI Matching Center", all_matches=all_matches)
 
 # Figure 5.1.6: Claim Submission and Verification Screen
 @app.route("/claims/submit/<int:item_id>", methods=["GET", "POST"])
@@ -1476,7 +1482,7 @@ def submit_claim(item_id):
 
     conn.close()
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="row justify-content-center py-3">
         <div class="col-lg-8">
@@ -1519,7 +1525,7 @@ def submit_claim(item_id):
     </div>
     {% endblock %}
     """
-    return render_template_string(content, base=BASE_LAYOUT, title="Claim Form & Verification (Figure 5.1.6)", item=item)
+    return render_template_string(content, title="Claim Form & Verification (Figure 5.1.6)", item=item)
 
 @app.route("/claims/manage")
 @login_required
@@ -1544,7 +1550,7 @@ def manage_claims():
     conn.close()
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
@@ -1610,7 +1616,7 @@ def manage_claims():
     </div>
     {% endblock %}
     """
-    return render_template_string(content, base=BASE_LAYOUT, title="Claims Verification Ledger", claims=claims)
+    return render_template_string(content, title="Claims Verification Ledger", claims=claims)
 
 @app.route("/claims/<int:claim_id>/approve", methods=["POST"])
 @login_required
@@ -1696,7 +1702,7 @@ def dashboard():
     conn.close()
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -1807,7 +1813,7 @@ def dashboard():
     {% endblock %}
     """
     return render_template_string(
-        content, base=BASE_LAYOUT, title="Authority Dashboard (Figure 5.1.7)",
+        content, title="Authority Dashboard (Figure 5.1.7)",
         total_items=total_items, total_claims=total_claims, pending_claims=pending_claims,
         total_users=total_users, recent_claims=recent_claims, recent_logs=recent_logs
     )
@@ -1822,7 +1828,7 @@ def notifications():
     conn.close()
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="row justify-content-center py-3">
         <div class="col-lg-8">
@@ -1852,7 +1858,7 @@ def notifications():
     </div>
     {% endblock %}
     """
-    return render_template_string(content, base=BASE_LAYOUT, title="Notifications Hub (Figure 5.1.8)", notifs=notifs)
+    return render_template_string(content, title="Notifications Hub (Figure 5.1.8)", notifs=notifs)
 
 @app.route("/audit-logs")
 @login_required
@@ -1863,7 +1869,7 @@ def audit_logs():
     conn.close()
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
@@ -1904,7 +1910,7 @@ def audit_logs():
     </div>
     {% endblock %}
     """
-    return render_template_string(content, base=BASE_LAYOUT, title="Audit Trail (Figure 5.1.8)", logs=logs)
+    return render_template_string(content, title="Audit Trail (Figure 5.1.8)", logs=logs)
 
 # Additional Required Helper Views
 @app.route("/items/<int:item_id>")
@@ -1918,7 +1924,7 @@ def view_item(item_id):
         return redirect(url_for("index"))
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="row justify-content-center py-3">
         <div class="col-lg-8">
@@ -1962,7 +1968,7 @@ def view_item(item_id):
     </div>
     {% endblock %}
     """
-    return render_template_string(content, base=BASE_LAYOUT, title=item["title"], item=item)
+    return render_template_string(content, title=item["title"], item=item)
 
 @app.route("/items/lost")
 def list_lost_items():
@@ -1972,7 +1978,7 @@ def list_lost_items():
     conn.close()
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="fw-bold text-danger mb-0"><i class="fa-solid fa-circle-question me-2"></i> Lost Assets Directory</h4>
@@ -1996,7 +2002,7 @@ def list_lost_items():
     </div>
     {% endblock %}
     """
-    return render_template_string(content, base=BASE_LAYOUT, title="Lost Items Directory", items=items)
+    return render_template_string(content, title="Lost Items Directory", items=items)
 
 @app.route("/items/found")
 def list_found_items():
@@ -2006,7 +2012,7 @@ def list_found_items():
     conn.close()
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="fw-bold text-success mb-0"><i class="fa-solid fa-circle-check me-2"></i> Found Assets Directory</h4>
@@ -2030,7 +2036,7 @@ def list_found_items():
     </div>
     {% endblock %}
     """
-    return render_template_string(content, base=BASE_LAYOUT, title="Found Items Directory", items=items)
+    return render_template_string(content, title="Found Items Directory", items=items)
 
 @app.route("/recovery/certificate/<int:item_id>")
 @login_required
@@ -2046,7 +2052,7 @@ def recovery_certificate(item_id):
         return redirect(url_for("index"))
 
     content = """
-    {% extends base %}
+    {% extends "base.html" %}
     {% block content %}
     <div class="row justify-content-center py-4">
         <div class="col-lg-8">
@@ -2099,7 +2105,7 @@ def recovery_certificate(item_id):
     </div>
     {% endblock %}
     """
-    return render_template_string(content, base=BASE_LAYOUT, title="Handover Certificate", item=item, claim=claim)
+    return render_template_string(content, title="Handover Certificate", item=item, claim=claim)
 
 # --------------------------------------------------------------------------------------
 # 6. APPLICATION ENTRY POINT
