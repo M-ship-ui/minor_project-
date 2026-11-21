@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
             emailField.value = 'staff.rajesh@sanskriti.edu.in';
             passField.value = 'staff123';
         } else if (role === 'student') {
-            emailField.value = 'student.mukesh@sanskriti.edu.in';
+            emailField.value = 'student.reddy@sanskriti.edu.in';
             passField.value = 'student123';
         } else if (role === 'student2') {
             emailField.value = 'student.priya@sanskriti.edu.in';

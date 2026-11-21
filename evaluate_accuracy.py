@@ -1,7 +1,7 @@
 """
 Intelligent Academic Asset Recovery and Management System
 AI/ML Matching Engine - Benchmark & Accuracy Evaluation Suite
-Sanskriti University &bull; Student: B. Mukesh (2023-BTCS-042)
+Sanskriti University &bull; Student: O. Pulla Reddy (2302320110)
 Faculty Guide: Dr. Sakuldeep Singh
 """
 

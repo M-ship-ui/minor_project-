@@ -1,7 +1,7 @@
 # Intelligent Academic Asset Recovery and Management System
 
 **Institution:** Sanskriti University  
-**Student Name:** B. Mukesh (Roll/ID: `2023-BTCS-042`)  
+**Student Name:** O. Pulla Reddy (Enrollment No: `2302320110`)  
 **Faculty Guide:** Dr. Sakuldeep Singh  
 **Project Start Date:** 25-08-2026 | **Checkpoint Date:** 05-10-2026  
 
@@ -165,7 +165,7 @@ For your college presentation, quick-fill buttons are provided on the login page
 | **Admin / Guide** | Dr. Sakuldeep Singh | `admin@sanskriti.edu.in` | `admin123` |
 | **Dept Head (HOD)** | Prof. Amit Sharma | `hod.cs@sanskriti.edu.in` | `hod123` |
 | **Staff / Security** | Rajesh Kumar (Library) | `staff.rajesh@sanskriti.edu.in` | `staff123` |
-| **Student (Presenter)** | B. Mukesh | `student.mukesh@sanskriti.edu.in` | `student123` |
+| **Student (Presenter)** | O. Pulla Reddy | `student.reddy@sanskriti.edu.in` | `student123` |
 | **Student 2** | Priya Verma | `student.priya@sanskriti.edu.in` | `priya123` |
 
 ---
@@ -192,7 +192,7 @@ Follow this step-by-step walkthrough to present the project to your faculty pane
 2. **The AI Asset Matching Engine in Action:**
    - Click on the **AI Matcher** tab in the top navigation bar.
    - Explain the formula card (TF-IDF vectorizer + OpenCV color histograms).
-   - Show the top match: **Dell XPS 15 Silver Laptop** lost by student B. Mukesh vs found by Library Officer Rajesh Kumar.
+   - Show the top match: **Dell XPS 15 Silver Laptop** lost by student O. Pulla Reddy vs found by Library Officer Rajesh Kumar.
    - Click **Deep Inspection** to showcase the side-by-side feature comparison:
      - TF-IDF Text Cosine Similarity: `~93%`
      - Category Alignment: `100%`
@@ -200,7 +200,7 @@ Follow this step-by-step walkthrough to present the project to your faculty pane
      - Overall Composite Score: `~84%`
 
 3. **Report Lost / Found with Instant Duplicate Checking:**
-   - Log in as **B. Mukesh** (use the 1-click button on `/login`).
+   - Log in as **O. Pulla Reddy** (use the 1-click button on `/login`).
    - Click **Report Lost Item**. Show the form validation, room selection, anonymous toggle, and photo upload.
    - Explain how submitting automatically triggers the AI background scan.
 

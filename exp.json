@@ -1,0 +1,167 @@
+{
+  "n_lost": 200,
+  "n_found": 400,
+  "n_true": 200,
+  "pairs": 80000,
+  "methods": {
+    "count": {
+      "label": "Word counts + cosine (no IDF)",
+      "top1": 0.495,
+      "top3": 0.67,
+      "top5": 0.74,
+      "mrr": 0.6029513773264185
+    },
+    "jaccard": {
+      "label": "Jaccard overlap of word sets",
+      "top1": 0.435,
+      "top3": 0.65,
+      "top5": 0.71,
+      "mrr": 0.5643840014960937
+    },
+    "tfidf": {
+      "label": "TF-IDF (unigrams) + cosine",
+      "top1": 0.505,
+      "top3": 0.685,
+      "top5": 0.755,
+      "mrr": 0.6245444150144185
+    },
+    "tfidf_sub": {
+      "label": "TF-IDF (sublinear tf) + cosine",
+      "top1": 0.515,
+      "top3": 0.695,
+      "top5": 0.77,
+      "mrr": 0.6340106814511556
+    },
+    "tfidf_bi": {
+      "label": "TF-IDF (unigrams + bigrams) + cosine",
+      "top1": 0.46,
+      "top3": 0.69,
+      "top5": 0.76,
+      "mrr": 0.5998248784547991
+    }
+  },
+  "thresholds": [
+    {
+      "t": 0.1,
+      "tp": 197,
+      "fp": 12273,
+      "fn": 3,
+      "precision": 0.015797914995990377,
+      "recall": 0.985,
+      "f1": 0.031097079715864243
+    },
+    {
+      "t": 0.2,
+      "tp": 195,
+      "fp": 9874,
+      "fn": 5,
+      "precision": 0.01936637203297249,
+      "recall": 0.975,
+      "f1": 0.03797838153666375
+    },
+    {
+      "t": 0.25,
+      "tp": 190,
+      "fp": 8221,
+      "fn": 10,
+      "precision": 0.0225894661752467,
+      "recall": 0.95,
+      "f1": 0.04412960167227964
+    },
+    {
+      "t": 0.3,
+      "tp": 186,
+      "fp": 6416,
+      "fn": 14,
+      "precision": 0.02817328082399273,
+      "recall": 0.93,
+      "f1": 0.05468979711849456
+    },
+    {
+      "t": 0.4,
+      "tp": 176,
+      "fp": 2409,
+      "fn": 24,
+      "precision": 0.06808510638297872,
+      "recall": 0.88,
+      "f1": 0.12639138240574507
+    },
+    {
+      "t": 0.5,
+      "tp": 164,
+      "fp": 1070,
+      "fn": 36,
+      "precision": 0.13290113452188007,
+      "recall": 0.82,
+      "f1": 0.22873082287308227
+    },
+    {
+      "t": 0.6,
+      "tp": 140,
+      "fp": 446,
+      "fn": 60,
+      "precision": 0.23890784982935154,
+      "recall": 0.7,
+      "f1": 0.356234096692112
+    }
+  ],
+  "suggestions_per_report_t025": {
+    "mean": 42.055,
+    "max": 72,
+    "zero": 0
+  },
+  "examples": [
+    {
+      "lost": "Lost my silver key bunch with a hostel room key near the Block A corridor",
+      "top": "Found a silver key bunch with a scooter key Block A corridor area found this morning",
+      "score": 0.809,
+      "correct": false,
+      "true_rank": 7
+    },
+    {
+      "lost": "Lost my silver spectacles with thick lenses near the Block A corridor",
+      "top": "Found a silver spectacles with thick lenses outside the Block A corridor handed over to the security desk",
+      "score": 0.852,
+      "correct": true,
+      "true_rank": 1
+    },
+    {
+      "lost": "Lost my grey Skybags bag with a laptop sleeve near the sports ground",
+      "top": "Found a red bag sports ground area handed over to the security desk",
+      "score": 0.674,
+      "correct": false,
+      "true_rank": 3
+    },
+    {
+      "lost": "Lost my silver SanDisk pen drive 32 GB near the auditorium",
+      "top": "Found a silver pen drive auditorium area found this morning",
+      "score": 0.736,
+      "correct": true,
+      "true_rank": 1
+    }
+  ],
+  "top1_failures": 97,
+  "failure_examples": [
+    {
+      "lost": "Lost my black Boat earphones with a case near the Block A corridor",
+      "top": "Found a brown glasses with a case outside the Block A corridor please contact",
+      "score": 0.443,
+      "true": "Found a black Boat earbuds with a case near the canteen",
+      "true_score": 0.294
+    },
+    {
+      "lost": "Lost my silver key bunch with a hostel room key near the Block A corridor",
+      "top": "Found a silver key bunch with a scooter key Block A corridor area found this morning",
+      "score": 0.809,
+      "true": "Found a grey keys with a hostel room key near the Block A corridor please contact",
+      "true_score": 0.622
+    },
+    {
+      "lost": "Lost my blue Wildcraft rucksack with a laptop sleeve near the hostel gate",
+      "top": "Found a grey Wildcraft rucksack with a laptop sleeve hostel gate area handed over to the security desk",
+      "score": 0.824,
+      "true": "Found a blue rucksack with a laptop sleeve near the Lab 3 left on a bench",
+      "true_score": 0.57
+    }
+  ]
+}

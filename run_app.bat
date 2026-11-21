@@ -3,7 +3,7 @@ title Sanskriti University - Academic Asset Recovery System
 color 0B
 echo =========================================================================
 echo    SANSKRITI UNIVERSITY - ACADEMIC ASSET RECOVERY SYSTEM
-echo    Student: B. Mukesh (2023-BTCS-042) ^| Guide: Dr. Sakuldeep Singh
+echo    Student: O. Pulla Reddy (2302320110) ^| Guide: Dr. Sakuldeep Singh
 echo =========================================================================
 echo.
 echo Starting Production Server...

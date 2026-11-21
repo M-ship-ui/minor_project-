@@ -18,7 +18,7 @@ def generate_sample_item_images():
     items_to_render = [
         ("dell_xps_lost.jpg", (40, 50, 70), (200, 210, 225), "Dell XPS 15", "Lost Item - Serial: DLXPS"),
         ("dell_xps_found.jpg", (45, 55, 75), (195, 205, 220), "Dell XPS 15", "Found at Central Library"),
-        ("id_card_lost.jpg", (11, 37, 69), (212, 175, 55), "Sanskriti ID", "Mukesh - 2023-BTCS-042"),
+        ("id_card_lost.jpg", (11, 37, 69), (212, 175, 55), "Sanskriti ID", "O. Pulla Reddy - 2302320110"),
         ("id_card_found.jpg", (15, 42, 75), (210, 170, 50), "Found Student ID", "SAC Cafeteria Counter"),
         ("oscilloscope.jpg", (25, 40, 45), (100, 200, 160), "Tektronix 100MHz", "VLSI Hardware Lab"),
         ("projector_remote.jpg", (30, 30, 35), (220, 220, 220), "Sony Remote", "Seminar Hall A"),
@@ -79,9 +79,19 @@ def seed_all():
             "Central Library", "STF-LIB-102", "+91 98765 43212", "default_avatar.png"
         ),
         (
-            4, "B. Mukesh (Student)", "student.mukesh@sanskriti.edu.in",
+            4, "O. Pulla Reddy (Student)", "student.reddy@sanskriti.edu.in",
             generate_password_hash("student123"), "student",
-            "Computer Science & Engineering", "2023-BTCS-042", "+91 98765 43213", "default_avatar.png"
+            "Computer Science & Engineering", "2302320110", "+91 98765 43213", "default_avatar.png"
+        ),
+        (
+            7, "O. Pulla Reddy (Alias)", "student.pulla@sanskriti.edu.in",
+            generate_password_hash("student123"), "student",
+            "Computer Science & Engineering", "2302320110", "+91 98765 43213", "default_avatar.png"
+        ),
+        (
+            8, "O. Pulla Reddy (Mukesh Alias)", "student.mukesh@sanskriti.edu.in",
+            generate_password_hash("student123"), "student",
+            "Computer Science & Engineering", "2302320110", "+91 98765 43213", "default_avatar.png"
         ),
         (
             5, "Priya Verma (Student)", "student.priya@sanskriti.edu.in",
@@ -154,7 +164,7 @@ def seed_all():
             "Computer Science & Engineering",
             "2nd Floor Silent Reading Cubicle #14", "Central Library",
             "2026-09-28", "16:30", "dell_xps_lost.jpg",
-            4, "B. Mukesh", "student.mukesh@sanskriti.edu.in", 0,
+            4, "O. Pulla Reddy", "student.reddy@sanskriti.edu.in", 0,
             "Lost", "SN: DLXPS-99214A", "Coding club sticker, blue silicone keyboard protector",
             None, 0, None, None
         ),
@@ -174,14 +184,14 @@ def seed_all():
         # 3. Lost ID Card by Mukesh
         (
             3, "TKT-LOST-2026-002", "lost",
-            "Sanskriti University Student ID Card - B. Mukesh",
+            "Sanskriti University Student ID Card - O. Pulla Reddy",
             "ID Cards",
-            "Sanskriti University official smart ID card for Computer Science student B. Mukesh (ID: 2023-BTCS-042). Blue university lanyard attached with library RFID chip.",
+            "Sanskriti University official smart ID card for Computer Science student O. Pulla Reddy (ID: 2302320110). Blue university lanyard attached with library RFID chip.",
             "Computer Science & Engineering",
             "Cafeteria dining hall table 8", "Student Activity Center",
             "2026-10-01", "13:15", "id_card_lost.jpg",
-            4, "B. Mukesh", "student.mukesh@sanskriti.edu.in", 0,
-            "Lost", "2023-BTCS-042", "Blue university lanyard, transparent card holder",
+            4, "O. Pulla Reddy", "student.reddy@sanskriti.edu.in", 0,
+            "Lost", "2302320110", "Blue university lanyard, transparent card holder",
             None, 0, None, None
         ),
         # 4. Found ID Card by Security -> High match with item #3
@@ -258,7 +268,7 @@ def seed_all():
             "Computer Science & Engineering",
             "Locker area bench", "Sports Complex",
             "2026-10-03", "18:00", "airpods.jpg",
-            4, "B. Mukesh", "student.mukesh@sanskriti.edu.in", 0,
+            4, "O. Pulla Reddy", "student.reddy@sanskriti.edu.in", 0,
             "Lost", "SN: H***72K", "Black leather case, faint scuff on lower lip",
             None, 0, None, None
         ),
@@ -297,7 +307,7 @@ def seed_all():
             "Computer Science & Engineering",
             "Symposium Hall Ground Floor", "Academic Block C",
             "2026-09-18", "19:00", None,
-            4, "B. Mukesh", "student.mukesh@sanskriti.edu.in", 0,
+            4, "O. Pulla Reddy", "student.reddy@sanskriti.edu.in", 0,
             "Lost", "SN: TP-L14-991", "University barcode label AST-CS-2024",
             None, 1, "Unresolved for over 18 days with high institutional value. Auto-escalated to Campus Security Head.", "2026-09-26 10:00:00"
         )
@@ -406,7 +416,7 @@ def seed_all():
 
     print("Seeding Audit Logs...")
     logs = [
-        (1, 4, "B. Mukesh", "ITEM_REPORTED", "Item", 1, "Reported lost Dell XPS 15 laptop in Central Library"),
+        (1, 4, "O. Pulla Reddy", "ITEM_REPORTED", "Item", 1, "Reported lost Dell XPS 15 laptop in Central Library"),
         (2, 3, "Rajesh Kumar", "ITEM_REPORTED", "Item", 2, "Reported found Dell XPS 15 laptop at Library Counter"),
         (3, None, "AI ML Engine", "MATCH_DETECTED", "Match", 1, "High-confidence composite match score (84.5%) discovered between tickets #1 and #2"),
         (4, 5, "Priya Verma", "CLAIM_SUBMITTED", "Claim", 1, "Submitted ownership claim #CLM-2026-001 with lab voucher proof"),
@@ -420,9 +430,9 @@ def seed_all():
     print("Seeding Simulated Email Logs...")
     emails = [
         (
-            1, "student.mukesh@sanskriti.edu.in", "B. Mukesh",
+            1, "student.reddy@sanskriti.edu.in", "O. Pulla Reddy",
             "[Sanskriti Recovery Portal] Potential Match Found for Lost Item #TKT-LOST-2026-001",
-            "Dear B. Mukesh,\n\nOur AI matching engine has detected an 84.5% match for your Dell XPS 15 laptop reported lost on 2026-09-28. Please visit the portal to review candidate photos and initiate verification.\n\nRegards,\nSanskriti University Asset Recovery Cell"
+            "Dear O. Pulla Reddy,\n\nOur AI matching engine has detected an 84.5% match for your Dell XPS 15 laptop reported lost on 2026-09-28. Please visit the portal to review candidate photos and initiate verification.\n\nRegards,\nSanskriti University Asset Recovery Cell"
         ),
         (
             2, "security@sanskriti.edu.in", "Campus Security Control",

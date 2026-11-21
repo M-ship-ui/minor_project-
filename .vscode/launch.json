@@ -2,7 +2,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Run Academic Asset Portal",
+            "name": "Python: Run All-in-One Single File (Guide Demo)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/single_file_academic_system.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PORT": "5000"
+            }
+        },
+        {
+            "name": "Python: Run Modular Web Portal (app.py)",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/app.py",
@@ -14,17 +25,38 @@
             }
         },
         {
-            "name": "Python: Run Seed Database",
+            "name": "Python: Run Matching Unit Tests (test_matching.py)",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/seed_data.py",
+            "program": "${workspaceFolder}/test_matching.py",
             "console": "integratedTerminal"
         },
         {
-            "name": "Python: Run Unit Tests",
+            "name": "Python: Run Synthetic Benchmark (experiment.py)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/experiment.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Evaluate Accuracy Benchmark (evaluate_accuracy.py)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/evaluate_accuracy.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Run Full Application Unit Tests (test_app.py)",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/test_app.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Re-Seed Database (seed_data.py)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/seed_data.py",
             "console": "integratedTerminal"
         }
     ]

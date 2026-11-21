@@ -22,17 +22,17 @@ class AcademicAssetSystemTests(unittest.TestCase):
 
     def test_02_user_login_success_and_failure(self):
         """Test authentication flow for student and admin."""
-        # Valid login as student Mukesh
+        # Valid login as student O. Pulla Reddy
         res = self.client.post('/login', data={
-            'email': 'student.mukesh@sanskriti.edu.in',
+            'email': 'student.reddy@sanskriti.edu.in',
             'password': 'student123'
         }, follow_redirects=True)
         self.assertEqual(res.status_code, 200)
-        self.assertIn(b'Welcome back, B. Mukesh', res.data)
+        self.assertIn(b'Welcome back, O. Pulla Reddy', res.data)
 
         # Invalid password
         res_bad = self.client.post('/login', data={
-            'email': 'student.mukesh@sanskriti.edu.in',
+            'email': 'student.reddy@sanskriti.edu.in',
             'password': 'wrongpassword'
         }, follow_redirects=True)
         self.assertIn(b'Invalid email or password', res_bad.data)
