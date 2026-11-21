@@ -23,7 +23,7 @@ FIG_DIR = r"C:\Users\bandi\OneDrive\Desktop\academic_asset_system\figures"
 OUT_PDF_WS = r"C:\Users\bandi\OneDrive\Desktop\academic_asset_system\Intelligent_Academic_Asset_Recovery_Project_Report_O_Pulla_Reddy.pdf"
 OUT_PDF_DESKTOP = r"C:\Users\bandi\OneDrive\Desktop\Intelligent_Academic_Asset_Recovery_Project_Report_O_Pulla_Reddy.pdf"
 
-GH_REPO_URL = "https://github.com/O-Pulla-Reddy/academic-asset-system"
+GH_REPO_URL = "https://github.com/M-ship-ui/minor_project-"
 PORTAL_BASE_URL = "http://127.0.0.1:5000"
 
 def main():

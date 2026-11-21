@@ -4,6 +4,7 @@
 **Student Name:** O. Pulla Reddy (Enrollment No: `2302320110`)  
 **Faculty Guide:** Dr. Sakuldeep Singh  
 **Project Start Date:** 25-08-2026 | **Checkpoint Date:** 05-10-2026  
+**GitHub Repository:** [https://github.com/M-ship-ui/minor_project-](https://github.com/M-ship-ui/minor_project-)  
 
 ---
 
