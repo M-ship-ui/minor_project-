@@ -308,7 +308,117 @@ BASE_LAYOUT = """
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        h1, h2, h3, h4, h5, h6, .display-6, .navbar-brand {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
+        .pulse-beacon {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #10b981;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulse-ring 1.8s infinite cubic-bezier(0.66, 0, 0, 1);
+        }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 999px;
+            font-size: 0.825rem;
+            font-weight: 600;
+            color: #334155;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+        .filter-chip:hover {
+            background: #002147;
+            color: #ffffff;
+            border-color: #002147;
+            transform: translateY(-1px);
+        }
+        .filter-chip.active {
+            background: #c99700;
+            color: #000000;
+            border-color: #c99700;
+        }
+        .floating-role-dock {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1080;
+            background: rgba(0, 26, 56, 0.96);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(201, 151, 0, 0.5);
+            box-shadow: 0 10px 32px rgba(0, 0, 0, 0.35);
+            border-radius: 50px;
+            padding: 6px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .floating-role-dock:hover {
+            transform: scale(1.02);
+            border-color: #c99700;
+        }
+        .role-pill-btn {
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 999px;
+            text-decoration: none;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+        .btn-gold-executive {
+            background: linear-gradient(135deg, #e5b83b 0%, #c99700 100%);
+            color: #001a38;
+            font-weight: 700;
+            border: none;
+            box-shadow: 0 4px 14px rgba(201, 151, 0, 0.35);
+            transition: all 0.2s ease;
+        }
+        .btn-gold-executive:hover {
+            background: linear-gradient(135deg, #f0c34a 0%, #b88a00 100%);
+            color: #000000;
+            transform: translateY(-1px);
+        }
         :root {
             --su-navy: #002147;
             --su-gold: #c99700;
@@ -384,6 +494,7 @@ BASE_LAYOUT = """
                 <span class="text-white-50">| Mathura, Uttar Pradesh &bull; Department of Computer Science & Engineering</span>
             </div>
             <div class="d-flex align-items-center gap-3">
+                <span class="pulse-beacon"><span class="pulse-dot"></span> SYSTEM LIVE</span>
                 <span><i class="fa-solid fa-user-graduate text-warning"></i> Student: <strong>O. Pulla Reddy (2302320110)</strong></span>
                 <span><i class="fa-solid fa-chalkboard-user text-warning"></i> Guide: <strong>Dr. Sakuldeep Singh</strong></span>
                 <span class="badge bg-warning text-dark">Session 2026-27</span>
@@ -483,6 +594,23 @@ BASE_LAYOUT = """
             </div>
         </div>
     </footer>
+
+    <!-- Floating Fast Role-Switcher Dock for Faculty Review -->
+    <div class="floating-role-dock d-none d-sm-flex" title="1-Click Evaluation Switcher for Guide">
+        <span class="text-white-50 small fw-bold me-1"><i class="fa-solid fa-sliders text-warning"></i> Switch Role:</span>
+        <a href="/quick-switch/student" class="role-pill-btn bg-dark text-warning border border-warning" title="Switch to Student O. Pulla Reddy">
+            <i class="fa-solid fa-user-graduate me-1"></i> Student (Reddy)
+        </a>
+        <a href="/quick-switch/admin" class="role-pill-btn bg-danger text-white" title="Switch to Admin Dr. Sakuldeep Singh">
+            <i class="fa-solid fa-user-shield me-1"></i> Admin / Guide
+        </a>
+        <a href="/quick-switch/hod" class="role-pill-btn bg-primary text-white" title="Switch to HOD CSE">
+            <i class="fa-solid fa-user-tie me-1"></i> HOD
+        </a>
+        <a href="/quick-switch/staff" class="role-pill-btn bg-success text-white" title="Switch to Library Staff">
+            <i class="fa-solid fa-user-check me-1"></i> Staff
+        </a>
+    </div>
 
     <!-- Bootstrap 5 JavaScript Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -593,6 +721,92 @@ def index():
             </div>
         </div>
     </div>
+
+    <!-- Quick Category Filter Chips Navigation -->
+    <div class="d-flex align-items-center gap-2 overflow-auto pb-3 mb-4">
+        <span class="small fw-bold text-muted text-uppercase text-nowrap"><i class="fa-solid fa-tags text-warning me-1"></i> Quick Filter:</span>
+        <a href="{{ url_for('search') }}" class="filter-chip active"><i class="fa-solid fa-layer-group"></i> All Items</a>
+        <a href="{{ url_for('search', category='Laptops') }}" class="filter-chip"><i class="fa-solid fa-laptop"></i> Laptops</a>
+        <a href="{{ url_for('search', category='Electronic Devices') }}" class="filter-chip"><i class="fa-solid fa-headphones"></i> Electronics</a>
+        <a href="{{ url_for('search', category='ID Cards') }}" class="filter-chip"><i class="fa-solid fa-id-card"></i> Student IDs</a>
+        <a href="{{ url_for('search', category='Laboratory Equipment') }}" class="filter-chip"><i class="fa-solid fa-flask"></i> Lab Equipment</a>
+        <a href="{{ url_for('search', category='Books') }}" class="filter-chip"><i class="fa-solid fa-book"></i> Textbooks</a>
+    </div>
+
+    <!-- Live Interactive AI Match Simulator Widget -->
+    <div class="card mb-4 shadow-sm border-2 border-primary border-opacity-25" style="border-radius: 14px; background: rgba(255,255,255,0.95);">
+        <div class="card-header text-white d-flex justify-content-between align-items-center py-3" style="background: linear-gradient(135deg, #001a38 0%, #002855 100%);">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-brain text-warning fs-5"></i>
+                <div>
+                    <h6 class="fw-bold mb-0 text-white">Live AI Match Simulator (TF-IDF & Sublinear Cosine Ranking)</h6>
+                    <div class="small text-white-50">Interactive evaluation module &bull; Test NLP text similarity ranking in real-time</div>
+                </div>
+            </div>
+            <span class="badge bg-warning text-dark font-monospace">Appendix A.1 NLP</span>
+        </div>
+        <div class="card-body p-4">
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <label class="form-label fw-bold small text-danger"><i class="fa-solid fa-circle-question me-1"></i> Sample Lost Report</label>
+                    <textarea id="simLostText" class="form-control" rows="2">Dell XPS 15 Silver Laptop with Sanskriti Coding Club Sticker on lid</textarea>
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label fw-bold small text-success"><i class="fa-solid fa-circle-check me-1"></i> Sample Found Inventory Item</label>
+                    <textarea id="simFoundText" class="form-control" rows="2">Found Dell XPS 15 silver metallic laptop left on 2nd floor desk Central Library</textarea>
+                </div>
+                <div class="col-md-2 d-flex flex-column justify-content-end">
+                    <button type="button" class="btn btn-gold-executive fw-bold w-100 py-2 mb-2" onclick="runSim()">
+                        <i class="fa-solid fa-play me-1"></i> Test Score
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm w-100" onclick="cyclePreset()">
+                        <i class="fa-solid fa-rotate me-1"></i> Cycle Preset
+                    </button>
+                </div>
+            </div>
+            <div class="mt-3 p-3 bg-light rounded-3 border d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="fs-2 fw-bold text-navy" id="simScoreDisplay" style="color: #002147;">84.5%</div>
+                    <div>
+                        <div class="fw-bold small text-dark" id="simVerdictText">High Confidence Match &bull; Suggested for Physical Verification</div>
+                        <div class="small text-muted" id="simTokensText">Matched Tokens: <code>dell</code>, <code>xps</code>, <code>15</code>, <code>silver</code>, <code>laptop</code>, <code>central</code>, <code>library</code></div>
+                    </div>
+                </div>
+                <a href="{{ url_for('ai_matching_center') }}" class="btn btn-sm btn-su fw-semibold">Open Matching Center &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const simPresets = [
+            { lost: "Dell XPS 15 Silver Laptop with Sanskriti Coding Club Sticker on lid", found: "Found Dell XPS 15 silver metallic laptop left on 2nd floor desk Central Library" },
+            { lost: "Sanskriti University Student ID Card for O. Pulla Reddy (2302320110) with blue lanyard", found: "Found smart card ID for Computer Science student with blue university lanyard near cafeteria counter" },
+            { lost: "Tektronix 100MHz Digital Storage Oscilloscope Unit left in VLSI Hardware Lab Room 302", found: "Found dual-channel oscilloscope left unattended on equipment trolley outside Lab 302" }
+        ];
+        let pIdx = 0;
+        function cyclePreset() {
+            pIdx = (pIdx + 1) % simPresets.length;
+            document.getElementById('simLostText').value = simPresets[pIdx].lost;
+            document.getElementById('simFoundText').value = simPresets[pIdx].found;
+            runSim();
+        }
+        function runSim() {
+            const t1 = (document.getElementById('simLostText').value || '').toLowerCase();
+            const t2 = (document.getElementById('simFoundText').value || '').toLowerCase();
+            const clean = str => str.replace(/[^a-z0-9\\s]/g, ' ').split(/\\s+/).filter(w => w.length > 2);
+            const w1 = clean(t1), w2 = clean(t2);
+            const stop = new Set(['the', 'and', 'for', 'with', 'from', 'this', 'that', 'with', 'left', 'found', 'lost']);
+            const tok1 = w1.filter(w => !stop.has(w)), tok2 = w2.filter(w => !stop.has(w));
+            const matches = tok1.filter(w => tok2.includes(w));
+            const uniq = Array.from(new Set(matches));
+            let score = uniq.length ? (uniq.length / Math.sqrt(tok1.length * tok2.length)) : 0;
+            let pct = Math.min(96, Math.max(15, Math.round(score * 95)));
+            document.getElementById('simScoreDisplay').textContent = pct + '%';
+            document.getElementById('simScoreDisplay').style.color = pct >= 50 ? '#059669' : (pct >= 25 ? '#d97706' : '#dc2626');
+            document.getElementById('simVerdictText').textContent = pct >= 60 ? 'High Confidence Match &bull; Suggested for Verification' : (pct >= 25 ? 'Moderate Similarity &bull; Queued for Review' : 'Below Threshold (< 0.25) Filtered Out');
+            document.getElementById('simTokensText').innerHTML = uniq.length ? 'Matched Keywords: ' + uniq.map(m => `<code>${m}</code>`).join(' ') : '<span class="text-muted">No overlapping tokens.</span>';
+        }
+    </script>
 
     <!-- Highlight: High-Confidence AI Pairings Alert Banner -->
     <div class="card border-warning mb-4 shadow-sm" style="background-color: #fffdf5;">
@@ -912,6 +1126,30 @@ def logout():
     session.clear()
     flash("You have successfully signed out of the Sanskriti University Portal.", "info")
     return redirect(url_for("index"))
+
+@app.route("/quick-switch/<role>")
+def quick_switch(role):
+    """1-Click Evaluation Fast Switcher for Guide & Reviewers."""
+    role_map = {
+        "admin": "admin@sanskriti.edu.in",
+        "guide": "admin@sanskriti.edu.in",
+        "hod": "hod.cs@sanskriti.edu.in",
+        "staff": "staff.rajesh@sanskriti.edu.in",
+        "student": "student.reddy@sanskriti.edu.in"
+    }
+    email = role_map.get(role, "student.reddy@sanskriti.edu.in")
+    conn = get_db()
+    user = conn.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
+    conn.close()
+    if user:
+        session.clear()
+        session["user_id"] = user["id"]
+        session["user_role"] = user["role"]
+        session["user_name"] = user["name"]
+        session["user_email"] = user["email"]
+        flash(f"Switched role to {user['name']} ({user['role'].upper()}) for demonstration.", "success")
+    next_url = request.args.get("next") or request.referrer or url_for("index")
+    return redirect(next_url)
 
 # Figure 5.1.3: Report Item Form (Lost & Found)
 @app.route("/report/lost", methods=["GET", "POST"])

@@ -219,6 +219,29 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/quick-switch/<role>')
+def quick_switch(role):
+    """1-Click Evaluation Fast Switcher for Faculty Guide & Presentation Reviewers."""
+    role_map = {
+        'admin': 'admin@sanskriti.edu.in',
+        'guide': 'admin@sanskriti.edu.in',
+        'hod': 'hod.cs@sanskriti.edu.in',
+        'staff': 'staff.rajesh@sanskriti.edu.in',
+        'student': 'student.reddy@sanskriti.edu.in'
+    }
+    email = role_map.get(role, 'student.reddy@sanskriti.edu.in')
+    user = database.query_db("SELECT * FROM users WHERE email = ?", (email,), one=True)
+    if user:
+        session.clear()
+        session['user_id'] = user['id']
+        session['user_role'] = user['role']
+        session['user_name'] = user['name']
+        session['user_email'] = user['email']
+        flash(f"Switched role to {user['name']} ({user['role'].upper()}) for demonstration.", "success")
+    next_url = request.args.get('next') or request.referrer or url_for('index')
+    return redirect(next_url)
+
+
 # ==============================================================================
 # MODULE 4: USER PROFILE
 # ==============================================================================
