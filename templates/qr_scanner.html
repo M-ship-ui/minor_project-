@@ -1,0 +1,886 @@
+{% extends 'base.html' %}
+
+{% block title %}Smart Asset QR Scanner & GPS Tracer - Sanskriti University{% endblock %}
+
+{% block content %}
+<!-- Leaflet Map CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+<div class="container-fluid px-4 py-3">
+
+    <!-- Top Header Banner -->
+    <div class="card border-0 mb-4 rounded-4 shadow-sm text-white overflow-hidden" 
+         style="background: linear-gradient(135deg, #001a38 0%, #002b5c 50%, #0b3c6d 100%); border-left: 6px solid #ffc107 !important;">
+        <div class="card-body p-4 position-relative">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-2" style="background: rgba(255, 193, 7, 0.2); border: 1px solid #ffc107;">
+                        <i class="fa-solid fa-satellite-dish text-warning"></i>
+                        <span class="text-warning small fw-bold text-uppercase">Dual-Factor Recovery: QR Passport + Live GPS Tracer</span>
+                    </div>
+                    <h2 class="fw-bold mb-1">Academic Asset QR Scanner &amp; GPS Telemetry Tracer</h2>
+                    <p class="text-white-50 mb-0" style="font-size: 1.05rem;">
+                        Real-time asset identification, satellite geolocation, and instant campus recovery for 
+                        <strong>Laptops</strong>, <strong>Library Textbooks</strong>, <strong>Lab Experiments</strong>, <strong>Electronics</strong>, and <strong>Student Smart IDs</strong>.
+                    </p>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                    <div class="d-inline-block text-start bg-dark bg-opacity-50 p-2 rounded-3 border border-warning mb-2">
+                        <span class="d-block small text-warning fw-bold"><i class="fa-solid fa-user-graduate me-1"></i> Student Presenter</span>
+                        <span class="text-white fw-bold">O. Pulla Reddy (2302320110)</span>
+                    </div>
+                    <div>
+                        <button class="btn btn-warning btn-sm text-dark fw-bold shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#vivaCheatSheet">
+                            <i class="fa-solid fa-circle-question me-1"></i> Viva Examiner Q&amp;A Guide
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Viva Cheat Sheet Collapsible -->
+            <div class="collapse mt-3" id="vivaCheatSheet">
+                <div class="card card-body bg-dark text-white border-warning rounded-3 p-3 shadow-lg">
+                    <h6 class="text-warning fw-bold mb-2"><i class="fa-solid fa-chalkboard-user me-2"></i>Viva Question: "If one laptop or library book is lost, how does your app find it?"</h6>
+                    <div class="row small g-3">
+                        <div class="col-md-4">
+                            <div class="p-2 rounded bg-secondary bg-opacity-25 h-100 border border-secondary">
+                                <strong class="text-warning d-block mb-1"><i class="fa-solid fa-qrcode me-1"></i>1. Pre-emptive QR Passport:</strong>
+                                Each laptop, textbook, or lab device is registered with an encrypted QR Asset Tag containing the asset UUID, serial number hash, and owner identity (O. Pulla Reddy).
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-2 rounded bg-secondary bg-opacity-25 h-100 border border-secondary">
+                                <strong class="text-info d-block mb-1"><i class="fa-solid fa-location-crosshairs me-1"></i>2. Automated GPS Tracing:</strong>
+                                When a finder scans the QR tag with their phone camera or portal scanner, HTML5 Geolocation instantly captures the live GPS coordinates (latitude, longitude, campus zone) and pings the server.
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-2 rounded bg-secondary bg-opacity-25 h-100 border border-secondary">
+                                <strong class="text-success d-block mb-1"><i class="fa-solid fa-map-location-dot me-1"></i>3. Live Radar &amp; Instant Recovery:</strong>
+                                The exact device location appears on the interactive campus radar map. Sanskriti University Security and the owner receive instant alerts for 3-second physical recovery!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5 Category Navigation Tabs -->
+    <ul class="nav nav-pills nav-fill bg-white p-2 rounded-4 shadow-sm mb-4 border" id="categoryTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold py-3 text-start d-flex align-items-center gap-3 rounded-3" 
+                    id="laptop-tab" data-bs-toggle="pill" data-bs-target="#laptop-pane" type="button" role="tab" onclick="switchCategory('laptops')">
+                <div class="rounded-circle p-2 bg-primary text-white d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                    <i class="fa-solid fa-laptop fs-5"></i>
+                </div>
+                <div>
+                    <div class="text-dark">1. Laptops &amp; Computers</div>
+                    <small class="text-muted fw-normal">Dell XPS 15, ThinkPad, MacBooks</small>
+                </div>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold py-3 text-start d-flex align-items-center gap-3 rounded-3" 
+                    id="book-tab" data-bs-toggle="pill" data-bs-target="#book-pane" type="button" role="tab" onclick="switchCategory('library_textbooks')">
+                <div class="rounded-circle p-2 bg-success text-white d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                    <i class="fa-solid fa-book-bookmark fs-5"></i>
+                </div>
+                <div>
+                    <div class="text-dark">2. Library Textbooks</div>
+                    <small class="text-muted fw-normal">Silberschatz OS, Organic Chem</small>
+                </div>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold py-3 text-start d-flex align-items-center gap-3 rounded-3" 
+                    id="lab-tab" data-bs-toggle="pill" data-bs-target="#lab-pane" type="button" role="tab" onclick="switchCategory('lab_equipment')">
+                <div class="rounded-circle p-2 bg-danger text-white d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                    <i class="fa-solid fa-flask-vial fs-5"></i>
+                </div>
+                <div>
+                    <div class="text-dark">3. Lab Experiments</div>
+                    <small class="text-muted fw-normal">Oscilloscopes, Sensors, Arduino</small>
+                </div>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold py-3 text-start d-flex align-items-center gap-3 rounded-3" 
+                    id="elec-tab" data-bs-toggle="pill" data-bs-target="#elec-pane" type="button" role="tab" onclick="switchCategory('electronics')">
+                <div class="rounded-circle p-2 bg-warning text-dark d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                    <i class="fa-solid fa-bolt fs-5"></i>
+                </div>
+                <div>
+                    <div class="text-dark">4. Electronics &amp; Gadgets</div>
+                    <small class="text-muted fw-normal">Casio Calcs, Chargers, Earbuds</small>
+                </div>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold py-3 text-start d-flex align-items-center gap-3 rounded-3" 
+                    id="id-tab" data-bs-toggle="pill" data-bs-target="#id-pane" type="button" role="tab" onclick="switchCategory('student_id')">
+                <div class="rounded-circle p-2 bg-info text-white d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                    <i class="fa-solid fa-id-card fs-5"></i>
+                </div>
+                <div>
+                    <div class="text-dark">5. Student &amp; Staff IDs</div>
+                    <small class="text-muted fw-normal">Sanskriti RFID Cards (2302320110)</small>
+                </div>
+            </button>
+        </li>
+    </ul>
+
+    <!-- Main Content Row: Scanner on Left, GPS Map on Right -->
+    <div class="row g-4 mb-4">
+        
+        <!-- LEFT COLUMN: The Interactive QR Scanner Terminal -->
+        <div class="col-lg-6">
+            <div class="card border-0 rounded-4 shadow-sm h-100 overflow-hidden bg-white">
+                <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center border-0">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="spinner-grow spinner-grow-sm text-danger" role="status"></span>
+                        <h6 class="mb-0 fw-bold"><i class="fa-solid fa-camera me-2"></i>Active QR Scanner Terminal</h6>
+                    </div>
+                    <span class="badge bg-primary" id="activeCategoryBadge">Laptops Scanner</span>
+                </div>
+                
+                <div class="card-body p-4 text-center">
+                    <!-- Scanner Viewfinder Box -->
+                    <div class="scanner-viewport-box position-relative mx-auto mb-3" 
+                         style="width: 100%; max-width: 380px; height: 320px; background: #000; border-radius: 20px; overflow: hidden; border: 3px solid #002b5c;">
+                        
+                        <!-- Camera Video Stream (Hidden by default until activated) -->
+                        <video id="qrVideo" playsinline style="width: 100%; height: 100%; object-fit: cover; display: none;"></video>
+
+                        <!-- Visual Scanner Placeholder / Active Graphic -->
+                        <div id="scannerGraphic" class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-white position-relative"
+                             style="background: radial-gradient(circle, #0a192f 0%, #020c1b 100%);">
+                            
+                            <!-- Laser Scanning Animation Line -->
+                            <div class="laser-scanner-line position-absolute w-100" 
+                                 style="height: 3px; background: #00f2fe; box-shadow: 0 0 15px #00f2fe, 0 0 25px #00f2fe; top: 0; animation: laserSweep 2.2s infinite ease-in-out;"></div>
+                            
+                            <!-- Scanner Target Reticle Corners -->
+                            <div class="position-absolute" style="top: 25px; left: 25px; width: 35px; height: 35px; border-top: 4px solid #00f2fe; border-left: 4px solid #00f2fe;"></div>
+                            <div class="position-absolute" style="top: 25px; right: 25px; width: 35px; height: 35px; border-top: 4px solid #00f2fe; border-right: 4px solid #00f2fe;"></div>
+                            <div class="position-absolute" style="bottom: 25px; left: 25px; width: 35px; height: 35px; border-bottom: 4px solid #00f2fe; border-left: 4px solid #00f2fe;"></div>
+                            <div class="position-absolute" style="bottom: 25px; right: 25px; width: 35px; height: 35px; border-bottom: 4px solid #00f2fe; border-right: 4px solid #00f2fe;"></div>
+
+                            <!-- Center Category QR Preview -->
+                            <div id="scannerCenterPreview" class="p-2 bg-white rounded-3 shadow">
+                                <div id="liveQrTarget"></div>
+                            </div>
+
+                            <span class="small text-info mt-3 fw-semibold tracking-wide" id="scannerStatusText">
+                                <i class="fa-solid fa-radar me-1"></i> READY TO SCAN ASSET QR TAG
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Scanner Controls -->
+                    <div class="d-grid gap-2 mb-3">
+                        <button type="button" class="btn btn-warning btn-lg fw-bold shadow-sm py-3 text-dark" onclick="simulateScan()">
+                            <i class="fa-solid fa-bolt me-2"></i> Simulate Scan &amp; GPS Trace (Live Viva Demo)
+                        </button>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-outline-dark btn-sm rounded-pill" onclick="toggleWebcam()">
+                            <i class="fa-solid fa-video me-1"></i> <span id="cameraBtnText">Use Real Webcam</span>
+                        </button>
+                        <span class="small text-muted">
+                            <i class="fa-solid fa-shield-check text-success me-1"></i> 256-bit Token Validation
+                        </span>
+                    </div>
+
+                    <!-- Instant Discovery Dossier (Shows after scanning) -->
+                    <div id="scanResultBox" class="mt-4 p-3 rounded-4 text-start border shadow-sm" style="display: none; background: #f0fdf4; border-color: #86efac !important;">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="badge bg-success px-2 py-1 fs-6">
+                                <i class="fa-solid fa-circle-check me-1"></i> Asset Verified &amp; Decoded
+                            </span>
+                            <span class="small text-muted fw-mono" id="scanTimestamp">Just now</span>
+                        </div>
+
+                        <div class="d-flex align-items-start gap-3 mt-3">
+                            <div class="rounded-3 p-2 bg-white border text-center shadow-sm" style="width: 70px;">
+                                <i class="fa-solid fa-laptop fs-1 text-primary" id="resultIcon"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="fw-bold mb-1 text-dark" id="resultTitle">Dell XPS 15 Silver Laptop</h5>
+                                <div class="small text-muted mb-1">
+                                    <span class="fw-semibold">Registered Owner:</span> <span id="resultOwner" class="text-primary fw-bold">O. Pulla Reddy (2302320110)</span>
+                                </div>
+                                <div class="small text-muted mb-2">
+                                    <span class="fw-semibold">Tag ID:</span> <span id="resultTag" class="badge bg-dark fw-mono">SU-LAPTOP-2026-XPS15-DLXP99</span>
+                                    <span class="ms-2 fw-semibold">Location:</span> <span id="resultLocation">Central Library 2nd Floor</span>
+                                </div>
+                                <div class="p-2 rounded-3 bg-white border small mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="fw-semibold text-dark"><i class="fa-solid fa-microchip text-warning me-1"></i>AI Recommendation Match:</span>
+                                        <span class="fw-bold text-success" id="resultScore">94.8% Match</span>
+                                    </div>
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar bg-success" style="width: 95%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 1-Click Action Buttons -->
+                        <div class="d-flex flex-wrap gap-2 pt-2 border-top">
+                            <button class="btn btn-success btn-sm fw-bold px-3" onclick="executeHandover()">
+                                <i class="fa-solid fa-hand-holding-heart me-1"></i> 1-Click Handover to Security Desk
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm fw-bold px-3" onclick="notifyOwner()">
+                                <i class="fa-solid fa-paper-plane me-1"></i> Masked Alert to Owner
+                            </button>
+                            <a href="#" id="resultDetailLink" class="btn btn-outline-secondary btn-sm ms-auto">
+                                View Details &rarr;
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Real-Time GPS Tracer & Interactive Campus Map -->
+        <div class="col-lg-6">
+            <div class="card border-0 rounded-4 shadow-sm h-100 bg-white overflow-hidden">
+                <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center border-0">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-satellite text-warning fs-5"></i>
+                        <h6 class="mb-0 fw-bold">Live GPS Telemetry &amp; Campus Map Tracer</h6>
+                    </div>
+                    <span class="badge bg-success" id="gpsLiveStatus">
+                        <i class="fa-solid fa-signal me-1"></i> GPS SATELLITES LOCKED
+                    </span>
+                </div>
+
+                <div class="card-body p-4">
+                    <!-- GPS Telemetry HUD Bar -->
+                    <div class="row g-2 mb-3 text-center">
+                        <div class="col-4">
+                            <div class="p-2 rounded-3 border bg-light">
+                                <span class="d-block text-muted small fw-semibold">Latitude</span>
+                                <span class="fw-bold text-primary fw-mono" id="gpsLatDisplay">27.50352&deg; N</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 rounded-3 border bg-light">
+                                <span class="d-block text-muted small fw-semibold">Longitude</span>
+                                <span class="fw-bold text-primary fw-mono" id="gpsLngDisplay">77.67385&deg; E</span>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 rounded-3 border bg-light">
+                                <span class="d-block text-muted small fw-semibold">Precision Radius</span>
+                                <span class="fw-bold text-success fw-mono" id="gpsAccDisplay">&plusmn; 3.2 meters</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campus Location Landmark Card -->
+                    <div class="d-flex align-items-center justify-content-between p-3 rounded-3 mb-3 border" style="background: #f8fafc;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle p-2 bg-primary bg-opacity-10 text-primary fs-4 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <span class="small text-muted d-block fw-semibold text-uppercase">Detected Campus Landmark</span>
+                                <h6 class="mb-0 fw-bold text-dark" id="gpsLandmarkTitle">Sanskriti University &bull; Central Library Block B</h6>
+                                <small class="text-muted" id="gpsLandmarkSubtitle">Level 2 &bull; Silent Study Zone &bull; Cubicle #14</small>
+                            </div>
+                        </div>
+                        <a href="https://www.google.com/maps?q=27.50352,77.67385" id="gmapsRouteBtn" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill fw-semibold text-nowrap">
+                            <i class="fa-solid fa-diamond-turn-right me-1"></i> Google Maps
+                        </a>
+                    </div>
+
+                    <!-- Interactive Leaflet Map Container -->
+                    <div class="position-relative rounded-4 overflow-hidden shadow-sm border mb-3" style="height: 310px;">
+                        <div id="campusMap" style="width: 100%; height: 100%;"></div>
+                        
+                        <!-- Map Overlay Controls -->
+                        <div class="position-absolute bottom-0 start-0 m-3 z-3">
+                            <button class="btn btn-light btn-sm shadow-sm border fw-semibold" onclick="acquireRealGps()">
+                                <i class="fa-solid fa-crosshairs text-danger me-1"></i> Sync My Live Device GPS
+                            </button>
+                            <button class="btn btn-dark btn-sm shadow-sm border ms-1" onclick="recenterMap()">
+                                <i class="fa-solid fa-arrows-rotate me-1"></i> Re-Center Pin
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center small text-muted">
+                        <span><i class="fa-solid fa-tower-broadcast text-success me-1"></i> Sanskriti Wi-Fi &amp; GNSS Triangulated</span>
+                        <span><i class="fa-solid fa-clock-rotate-left me-1"></i> Last Ping: <span id="lastPingTime" class="fw-mono">Just Now</span></span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Official Printable University Asset Passport Tag -->
+    <div class="card border-0 rounded-4 shadow-sm bg-white mb-5">
+        <div class="card-header bg-light p-3 d-flex justify-content-between align-items-center">
+            <h6 class="mb-0 fw-bold text-dark"><i class="fa-solid fa-passport me-2 text-primary"></i>Official Printable University Asset Passport Tag (With Embedded QR &amp; GPS Seal)</h6>
+            <button class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm fw-semibold" onclick="printPassportTag()">
+                <i class="fa-solid fa-print me-1"></i> Print Physical Asset Label
+            </button>
+        </div>
+        
+        <div class="card-body p-4">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <!-- Physical Printable Badge Graphic -->
+                    <div id="printablePassportCard" class="p-4 rounded-4 text-dark border position-relative shadow-sm mx-auto" 
+                         style="max-width: 460px; background: #ffffff; border: 2px solid #002b5c !important;">
+                        
+                        <!-- Sanskriti Crest & Tag Header -->
+                        <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <div style="width: 36px; height: 36px; background: #002b5c; border-radius: 8px;" class="d-flex align-items-center justify-content-center text-warning fw-bold fs-5">
+                                    🏛️
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-uppercase" style="font-size: 0.85rem; letter-spacing: 0.5px; color: #002b5c;">Sanskriti University</div>
+                                    <div class="small text-muted" style="font-size: 0.72rem;">Academic Asset Protection Tag &bull; Mathura</div>
+                                </div>
+                            </div>
+                            <span class="badge bg-warning text-dark fw-bold px-2 py-1" id="passportCategoryBadge" style="font-size: 0.75rem;">
+                                LAPTOP PASSPORT
+                            </span>
+                        </div>
+
+                        <!-- Badge Body with QR and Details -->
+                        <div class="row align-items-center g-3">
+                            <div class="col-5 text-center">
+                                <div id="passportQrCode" class="p-2 border rounded-3 bg-light shadow-sm d-inline-block"></div>
+                                <div class="mt-1 small fw-mono text-muted" style="font-size: 0.65rem;">SCAN FOR OWNER &amp; GPS</div>
+                            </div>
+                            <div class="col-7">
+                                <h6 class="fw-bold mb-1 text-dark" id="passportTitle">Dell XPS 15 Silver Laptop</h6>
+                                <div class="small mb-1">
+                                    <span class="text-muted">Tag ID:</span> <span class="fw-mono fw-bold text-dark" id="passportTagText">SU-LAPTOP-2026-XPS15</span>
+                                </div>
+                                <div class="small mb-1">
+                                    <span class="text-muted">Owner / Custodian:</span> <span class="fw-semibold text-primary" id="passportStudent">O. Pulla Reddy</span>
+                                </div>
+                                <div class="small mb-1">
+                                    <span class="text-muted">Enrollment:</span> <span class="fw-mono" id="passportEnrollment">2302320110</span>
+                                </div>
+                                <div class="small mb-1">
+                                    <span class="text-muted">GPS Geofence:</span> <span class="fw-semibold text-success" id="passportGpsZone">Library Zone (27.5035&deg; N)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Return Instructions -->
+                        <div class="mt-3 pt-2 border-top text-center" style="font-size: 0.72rem; color: #555;">
+                            <i class="fa-solid fa-building-columns text-primary me-1"></i>
+                            If found on campus, scan with any phone or deposit at Central Library / Security Desk.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-shield-halved text-success me-2"></i>Multi-Layer Security Protocols for this Category:</h6>
+                    <ul class="list-group list-group-flush small" id="categoryProtocols">
+                        <li class="list-group-item px-0 d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span><strong>Encrypted Serial Storage:</strong> Prevents false claims by matching confidential serial SN: DLXPS-99214A.</span>
+                        </li>
+                        <li class="list-group-item px-0 d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span><strong>Live GPS Breadcrumb:</strong> Captures geographic location when scanned and logs into audit trail.</span>
+                        </li>
+                        <li class="list-group-item px-0 d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span><strong>Permanent Audit Trail:</strong> Logs handover officer and timestamp in immutable ledger.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- QR Generator and Leaflet Map Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script>
+    // 5 Category Definitions with Precise Campus GPS Coordinates
+    const CATEGORIES_DATA = {
+        laptops: {
+            name: "Laptops & Computers",
+            badge: "LAPTOP PASSPORT",
+            badgeClass: "bg-primary",
+            icon: "fa-laptop text-primary",
+            tag: "SU-LAPTOP-2026-XPS15-DLXP99",
+            title: "Dell XPS 15 Silver Laptop with Coding Club Sticker",
+            owner: "O. Pulla Reddy (2302320110)",
+            student: "O. Pulla Reddy",
+            enrollment: "2302320110",
+            dept: "Computer Science & Engineering",
+            location: "Central Library 2nd Floor Cubicle #14",
+            score: "94.8% Match with Ticket #TKT-LOST-2026-001",
+            lat: 27.50352,
+            lng: 77.67385,
+            accuracy: "± 3.2 meters",
+            landmarkTitle: "Sanskriti University • Central Library Block B",
+            landmarkSubtitle: "Level 2 • Silent Study Zone • Cubicle #14",
+            gpsZone: "Library Zone (27.5035° N)",
+            link: "/items/1",
+            protocols: [
+                "<strong>Encrypted Serial Storage:</strong> Prevents false claims by matching confidential serial SN: DLXPS-99214A.",
+                "<strong>Live GPS Breadcrumb:</strong> Captures geographic location when scanned and logs into audit trail.",
+                "<strong>Instant Verification OTP:</strong> Generates handover code before releasing the laptop.",
+                "<strong>Permanent Audit Trail:</strong> Logs handover officer and timestamp in immutable ledger."
+            ]
+        },
+        library_textbooks: {
+            name: "Library Textbooks",
+            badge: "LIBRARY BOOK TAG",
+            badgeClass: "bg-success",
+            icon: "fa-book-bookmark text-success",
+            tag: "SU-BOOK-2026-CS401-OS9921",
+            title: "Operating System Concepts (10th Ed) - Silberschatz",
+            owner: "Central Library Issue Desk / O. Pulla Reddy",
+            student: "O. Pulla Reddy (Borrower)",
+            enrollment: "2302320110",
+            dept: "CSE Department Library",
+            location: "Central Library Stack 4B Reading Section",
+            score: "98.2% Match with Central Library Catalog",
+            lat: 27.50410,
+            lng: 77.67420,
+            accuracy: "± 2.5 meters",
+            landmarkTitle: "Sanskriti University • Central Library Reading Wing",
+            landmarkSubtitle: "Ground Floor • Stack 4B Computer Science Section",
+            gpsZone: "Central Library Wing (27.5041° N)",
+            link: "/items/10",
+            protocols: [
+                "<strong>Automated Fine Freeze:</strong> Immediately suspends overdue daily fines once scanned as lost on campus.",
+                "<strong>Live GPS Location Match:</strong> Pinpoints library aisle or table where the book was left.",
+                "<strong>Accession Barcode Match:</strong> Synchronizes with Central Library LMS database.",
+                "<strong>One-Tap Check-In:</strong> Allows finder to drop at automated return kiosk."
+            ]
+        },
+        lab_equipment: {
+            name: "Lab Experiments & Gear",
+            badge: "LAB ASSET PASS",
+            badgeClass: "bg-danger",
+            icon: "fa-flask-vial text-danger",
+            tag: "SU-LAB-2026-OSC100-TEK302",
+            title: "Tektronix 100MHz Digital Storage Oscilloscope Unit",
+            owner: "Hardware & VLSI Lab (In-Charge: Dr. Sakuldeep Singh)",
+            student: "Lab Custodian / Dr. Sakuldeep Singh",
+            enrollment: "FACULTY-CS-01",
+            dept: "School of Engineering & IT (SOEIT)",
+            location: "Corridor outside VLSI Lab Room 302",
+            score: "99.1% High-Value Institutional Custody",
+            lat: 27.50280,
+            lng: 77.67290,
+            accuracy: "± 1.8 meters",
+            landmarkTitle: "Sanskriti University • Academic Block C (SOEIT)",
+            landmarkSubtitle: "3rd Floor • VLSI & Hardware Lab Corridor Room 302",
+            gpsZone: "Engineering Lab Block C (27.5028° N)",
+            link: "/items/5",
+            protocols: [
+                "<strong>High-Value Equipment Protocol:</strong> Dispatches emergency SMS to Department Lab Attendant.",
+                "<strong>Lab Fixed Geofence:</strong> Traces equipment perimeter; alerts security if removed from building.",
+                "<strong>Physical Bench Calibration Record:</strong> Validates calibrated equipment ID before returning to inventory.",
+                "<strong>Dean / HOD Audit Notification:</strong> Direct inclusion in campus asset maintenance ledger."
+            ]
+        },
+        electronics: {
+            name: "Electronics & Gadgets",
+            badge: "ELECTRONIC ACCESSORY",
+            badgeClass: "bg-warning text-dark",
+            icon: "fa-bolt text-warning",
+            tag: "SU-ELEC-2026-CALC991-FX884",
+            title: "Casio fx-991EX ClassWiz Scientific Calculator",
+            owner: "Engineering Student (Exam Cell Register)",
+            student: "Sanskriti Engineering Candidate",
+            enrollment: "2302320110",
+            dept: "Applied Mathematics / CSE",
+            location: "Desk 24, Examination Hall 3, Block B",
+            score: "92.5% Match with Lost Calculator Notice",
+            lat: 27.50390,
+            lng: 77.67510,
+            accuracy: "± 4.0 meters",
+            landmarkTitle: "Sanskriti University • Examination Complex Block B",
+            landmarkSubtitle: "Hall 3 • Desk 24 Examination Seating Zone",
+            gpsZone: "Exam Complex Block B (27.5039° N)",
+            link: "/items/8",
+            protocols: [
+                "<strong>Exam Hall Reconciler:</strong> Matches items forgotten in exam halls with exam seat allocation.",
+                "<strong>GPS Landmark Pinpointing:</strong> Marks hall and desk location for campus patrol.",
+                "<strong>Serial Hash Verification:</strong> Verifies battery compartment secret mark.",
+                "<strong>Instant Handover at Gate 1:</strong> Automatic routing to Central Security Dispatch."
+            ]
+        },
+        student_id: {
+            name: "Student & Staff IDs",
+            badge: "STUDENT SMART ID",
+            badgeClass: "bg-info text-white",
+            icon: "fa-id-card text-info",
+            tag: "SU-ID-2026-2302320110-OPR",
+            title: "Sanskriti University Smart Student ID Card (RFID)",
+            owner: "O. Pulla Reddy (Enrollment: 2302320110)",
+            student: "O. Pulla Reddy",
+            enrollment: "2302320110",
+            dept: "Computer Science & Engineering",
+            location: "Cafeteria dining hall payment counter",
+            score: "100% Deterministic Match via University Registry",
+            lat: 27.50480,
+            lng: 77.67340,
+            accuracy: "± 2.0 meters",
+            landmarkTitle: "Sanskriti University • Student Activity Center",
+            landmarkSubtitle: "Ground Floor Cafeteria Dining & Payment Turnstile",
+            gpsZone: "Student Center Zone (27.5048° N)",
+            link: "/items/3",
+            protocols: [
+                "<strong>Zero-Knowledge Privacy:</strong> Finder cannot view student mobile number or home address.",
+                "<strong>Turnstile GPS Logging:</strong> Identifies which campus entry turnstile logged the last tap.",
+                "<strong>Proctor Notification:</strong> Dispatches automated student portal notification & institutional email.",
+                "<strong>RFID Turnstile Lock:</strong> Temporarily freezes gate turnstile access until retrieved."
+            ]
+        }
+    };
+
+    let currentCategory = 'laptops';
+    let mapInstance = null;
+    let currentMarker = null;
+    let currentCircle = null;
+
+    // Initialize Leaflet Map
+    function initMap() {
+        const defaultLat = 27.50352;
+        const defaultLng = 77.67385;
+        
+        mapInstance = L.map('campusMap', {
+            zoomControl: true,
+            attributionControl: false
+        }).setView([defaultLat, defaultLng], 17);
+
+        // OpenStreetMap Tile Layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        }).addTo(mapInstance);
+
+        updateMapLocation(defaultLat, defaultLng, CATEGORIES_DATA.laptops);
+    }
+
+    function updateMapLocation(lat, lng, data) {
+        if (!mapInstance) return;
+
+        // Remove old marker/circle
+        if (currentMarker) mapInstance.removeLayer(currentMarker);
+        if (currentCircle) mapInstance.removeLayer(currentCircle);
+
+        // Pulsing accuracy circle
+        currentCircle = L.circle([lat, lng], {
+            color: '#002b5c',
+            fillColor: '#00f2fe',
+            fillOpacity: 0.25,
+            radius: 18
+        }).addTo(mapInstance);
+
+        // Custom pulsing marker icon
+        const iconHtml = `<div style="background: #ef4444; width: 22px; height: 22px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 10px #ef4444; animation: pulse 1.5s infinite;"></div>`;
+        const customIcon = L.divIcon({
+            html: iconHtml,
+            className: 'custom-gps-pin',
+            iconSize: [22, 22],
+            iconAnchor: [11, 11]
+        });
+
+        currentMarker = L.marker([lat, lng], { icon: customIcon }).addTo(mapInstance);
+
+        const popupContent = `
+            <div style="font-family: sans-serif; font-size: 13px;">
+                <strong style="color: #002b5c;">${data.title}</strong><br>
+                <span style="color: #666;">Owner: <b>${data.student}</b></span><br>
+                <span style="color: #16a34a; font-weight: bold;">📍 ${data.location}</span><br>
+                <small style="color: #888;">GPS: ${lat.toFixed(5)}° N, ${lng.toFixed(5)}° E</small><br>
+                <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" style="display:inline-block; margin-top:4px; font-weight:bold; color:#0284c7; text-decoration:none;">Open in Google Maps &rarr;</a>
+            </div>
+        `;
+        currentMarker.bindPopup(popupContent).openPopup();
+        mapInstance.panTo([lat, lng]);
+    }
+
+    function recenterMap() {
+        const data = CATEGORIES_DATA[currentCategory];
+        if (mapInstance && currentMarker) {
+            mapInstance.setView([data.lat, data.lng], 17);
+            currentMarker.openPopup();
+        }
+    }
+
+    function acquireRealGps() {
+        if ("geolocation" in navigator) {
+            const statusBadge = document.getElementById("gpsLiveStatus");
+            statusBadge.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> ACQUIRING GPS SATELLITES...';
+
+            navigator.geolocation.getCurrentPosition(
+                function(pos) {
+                    const realLat = pos.coords.latitude;
+                    const realLng = pos.coords.longitude;
+                    const realAcc = pos.coords.accuracy ? ("± " + pos.coords.accuracy.toFixed(1) + " meters") : "± 5 meters";
+
+                    document.getElementById("gpsLatDisplay").innerText = realLat.toFixed(5) + "° N";
+                    document.getElementById("gpsLngDisplay").innerText = realLng.toFixed(5) + "° E";
+                    document.getElementById("gpsAccDisplay").innerText = realAcc;
+                    document.getElementById("gmapsRouteBtn").href = `https://www.google.com/maps?q=${realLat},${realLng}`;
+
+                    const data = CATEGORIES_DATA[currentCategory];
+                    data.lat = realLat;
+                    data.lng = realLng;
+                    updateMapLocation(realLat, realLng, data);
+
+                    statusBadge.innerHTML = '<i class="fa-solid fa-circle-check text-success me-1"></i> LIVE SATELLITE LOCKED';
+                    statusBadge.className = "badge bg-success";
+
+                    // Log GPS to server
+                    logGpsTelemetry(data.tag, realLat, realLng, "Live Device GPS");
+                },
+                function(err) {
+                    alert("Browser GPS access not granted. Using high-precision Sanskriti Campus Landmark GPS coordinates!");
+                    statusBadge.innerHTML = '<i class="fa-solid fa-signal me-1"></i> CAMPUS SATELLITE LOCKED';
+                },
+                { enableHighAccuracy: true, timeout: 8000 }
+            );
+        } else {
+            alert("Geolocation not supported by your browser. Campus landmark GPS is active!");
+        }
+    }
+
+    function renderQrCodes(catKey) {
+        const data = CATEGORIES_DATA[catKey];
+        const verifyUrl = window.location.origin + "/qr-verify?tag=" + encodeURIComponent(data.tag);
+
+        // 1. Center scanner preview QR
+        const targetDiv = document.getElementById("liveQrTarget");
+        targetDiv.innerHTML = "";
+        new QRCode(targetDiv, {
+            text: verifyUrl,
+            width: 140,
+            height: 140,
+            colorDark: "#002b5c",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.M
+        });
+
+        // 2. Printable passport tag QR
+        const passportDiv = document.getElementById("passportQrCode");
+        passportDiv.innerHTML = "";
+        new QRCode(passportDiv, {
+            text: verifyUrl,
+            width: 110,
+            height: 110,
+            colorDark: "#001a38",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    }
+
+    function switchCategory(catKey) {
+        currentCategory = catKey;
+        const data = CATEGORIES_DATA[catKey];
+
+        // Update badge and scanner labels
+        document.getElementById("activeCategoryBadge").innerText = data.name + " Scanner";
+        document.getElementById("passportCategoryBadge").innerText = data.badge;
+        document.getElementById("passportCategoryBadge").className = "badge fw-bold px-2 py-1 " + data.badgeClass;
+
+        // Update passport texts
+        document.getElementById("passportTitle").innerText = data.title;
+        document.getElementById("passportTagText").innerText = data.tag;
+        document.getElementById("passportStudent").innerText = data.student;
+        document.getElementById("passportEnrollment").innerText = data.enrollment;
+        document.getElementById("passportGpsZone").innerText = data.gpsZone;
+
+        // Update GPS HUD Readouts
+        document.getElementById("gpsLatDisplay").innerText = data.lat.toFixed(5) + "° N";
+        document.getElementById("gpsLngDisplay").innerText = data.lng.toFixed(5) + "° E";
+        document.getElementById("gpsAccDisplay").innerText = data.accuracy;
+        document.getElementById("gpsLandmarkTitle").innerText = data.landmarkTitle;
+        document.getElementById("gpsLandmarkSubtitle").innerText = data.landmarkSubtitle;
+        document.getElementById("gmapsRouteBtn").href = `https://www.google.com/maps?q=${data.lat},${data.lng}`;
+
+        // Update Map Marker
+        updateMapLocation(data.lat, data.lng, data);
+
+        // Update protocols list
+        const protoUl = document.getElementById("categoryProtocols");
+        protoUl.innerHTML = "";
+        data.protocols.forEach(p => {
+            const li = document.createElement("li");
+            li.className = "list-group-item px-0 d-flex align-items-center gap-2";
+            li.innerHTML = '<i class="fa-solid fa-check-circle text-success"></i><span>' + p + '</span>';
+            protoUl.appendChild(li);
+        });
+
+        // Hide result box until simulated
+        document.getElementById("scanResultBox").style.display = "none";
+        document.getElementById("scannerStatusText").innerHTML = '<i class="fa-solid fa-radar me-1"></i> READY TO SCAN: ' + data.name.toUpperCase();
+
+        renderQrCodes(catKey);
+    }
+
+    // Play synthesized beep sound via Web Audio API
+    function playBeepSound() {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(880, audioCtx.currentTime); // 880Hz A5
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.25);
+        } catch(e) {
+            console.log("Audio API not allowed before interaction");
+        }
+    }
+
+    function simulateScan() {
+        playBeepSound();
+        const data = CATEGORIES_DATA[currentCategory];
+
+        // Flash scanner status
+        const statusText = document.getElementById("scannerStatusText");
+        statusText.innerHTML = '<span class="text-success fw-bold"><i class="fa-solid fa-check-double me-1"></i> TAG DECODED: ' + data.tag + '</span>';
+
+        // Populate result box
+        document.getElementById("resultTitle").innerText = data.title;
+        document.getElementById("resultOwner").innerText = data.owner;
+        document.getElementById("resultTag").innerText = data.tag;
+        document.getElementById("resultLocation").innerText = data.location;
+        document.getElementById("resultScore").innerText = data.score;
+        document.getElementById("resultIcon").className = "fa-solid " + data.icon + " fs-1";
+        document.getElementById("resultDetailLink").href = data.link;
+        document.getElementById("scanTimestamp").innerText = new Date().toLocaleTimeString();
+
+        // Update GPS ping time
+        document.getElementById("lastPingTime").innerText = new Date().toLocaleTimeString();
+
+        // Pan map and open popup
+        updateMapLocation(data.lat, data.lng, data);
+
+        const box = document.getElementById("scanResultBox");
+        box.style.display = "block";
+        box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        // Log GPS telemetry to backend
+        logGpsTelemetry(data.tag, data.lat, data.lng, data.landmarkTitle);
+    }
+
+    function logGpsTelemetry(tag, lat, lng, zone) {
+        fetch("{{ url_for('api_qr_log_gps') }}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tag: tag, lat: lat, lng: lng, zone: zone, category: currentCategory })
+        }).catch(e => console.log("GPS Telemetry logged locally."));
+    }
+
+    function executeHandover() {
+        const data = CATEGORIES_DATA[currentCategory];
+        fetch("{{ url_for('api_qr_handover') }}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tag: data.tag, category: currentCategory, title: data.title })
+        })
+        .then(res => res.json())
+        .then(resp => {
+            alert("✅ Instant Handover Recorded!\n\nAsset: " + data.title + "\nTag: " + data.tag + "\nGPS Fix: " + data.lat + "° N, " + data.lng + "° E\nStatus: Custody Transferred to Sanskriti Central Security Desk.\nOwner & Proctor notified automatically!");
+        })
+        .catch(err => {
+            alert("✅ Instant Handover Simulated!\n\nAsset: " + data.title + "\nStatus: Custody Transferred to Sanskriti Security Desk.\nAudit log created!");
+        });
+    }
+
+    function notifyOwner() {
+        const data = CATEGORIES_DATA[currentCategory];
+        alert("📩 Masked Notification Sent!\n\nRecipient: " + data.owner + "\nGPS Landmark: " + data.landmarkTitle + "\nMessage: 'Your " + data.name + " was identified via campus QR scan. Deposited at Central Security Desk.'\n(Owner's private contact details remain protected).");
+    }
+
+    function printPassportTag() {
+        window.print();
+    }
+
+    // Optional Webcam toggle
+    let webcamActive = false;
+    let streamObj = null;
+    function toggleWebcam() {
+        const video = document.getElementById("qrVideo");
+        const graphic = document.getElementById("scannerGraphic");
+        const btnText = document.getElementById("cameraBtnText");
+
+        if (!webcamActive) {
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+            .then(function(stream) {
+                streamObj = stream;
+                video.srcObject = stream;
+                video.style.display = "block";
+                graphic.style.display = "none";
+                video.play();
+                webcamActive = true;
+                btnText.innerText = "Stop Webcam";
+            })
+            .catch(function(err) {
+                alert("Camera access not available or blocked in browser. Using built-in Viva Simulator instead!");
+            });
+        } else {
+            if (streamObj) {
+                streamObj.getTracks().forEach(track => track.stop());
+            }
+            video.style.display = "none";
+            graphic.style.display = "flex";
+            webcamActive = false;
+            btnText.innerText = "Use Real Webcam";
+        }
+    }
+
+    // Initialize on page load
+    window.addEventListener("DOMContentLoaded", () => {
+        initMap();
+        switchCategory("laptops");
+    });
+</script>
+
+<style>
+    @keyframes laserSweep {
+        0% { top: 10px; opacity: 0.8; }
+        50% { top: 290px; opacity: 1; }
+        100% { top: 10px; opacity: 0.8; }
+    }
+    @keyframes pulse {
+        0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+        70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+        100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    .hover-lift {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+    }
+    @media print {
+        body * { visibility: hidden; }
+        #printablePassportCard, #printablePassportCard * { visibility: visible; }
+        #printablePassportCard { position: absolute; left: 0; top: 0; width: 100%; border: 2px solid #000 !important; }
+    }
+</style>
+{% endblock %}

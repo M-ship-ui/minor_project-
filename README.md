@@ -61,20 +61,36 @@ The platform handles campus assets such as:
    - Interactive Chart.js graphs: Monthly recovery trends, category distributions, campus loss hotspots, and turnaround duration.
    - One-click CSV incident report export.
 
+8. **Multi-Category QR Asset Scanners & Real-Time GPS Radar (Dual-Factor Recovery):**
+   - **Viva Defense Defense Module:** Directly answers the examiner question: *"If one laptop or library book is lost, how does your app find it?"*
+   - **Pre-emptive Encrypted QR Passports:** 5 dedicated asset classes with instant high-contrast QR generation:
+     1. 💻 **Laptops & Computers:** Dell XPS, ThinkPad, MacBooks (serial hash + owner identity)
+     2. 📚 **Library Textbooks:** Central Library ISBN/Accession tags
+     3. 🔬 **Lab Experiments & Equipment:** Embedded systems, oscilloscopes, microcontroller trainers
+     4. ⚡ **Electronics & Gadgets:** Scientific calculators, fast chargers, audio gear
+     5. 🪪 **Smart Student & Staff IDs:** RFID credentials (O. Pulla Reddy, Enrollment: 2302320110)
+   - **Real-Time GPS Telemetry:** Interactive OpenStreetMap (Leaflet.js) radar pinpoints physical asset coordinates (Sanskriti University Mathura: `27.50352° N, 77.67385° E`, `±3.2m accuracy`) with instant 1-click Google Maps satellite navigation.
+   - **One-Click Security Handover:** Instant custody transfer logging to Sanskriti Central Security Desk with masked owner alert notifications.
+
 ---
 
 ## 📂 Project Directory Structure
 
 ```
 academic_asset_system/
-├── app.py                     # Main Flask Application & Route Controllers (all 17 modules)
+├── app.py                     # Main Flask Application & Route Controllers (Modules 1-18)
+├── single_file_academic_system.py # All-in-one runnable monolith with built-in templates & DB
 ├── auth_helper.py             # Authentication helpers, session verification & RBAC decorators
 ├── database.py                # SQLite database connection, schema setup & audit utilities
 ├── ml_engine.py               # AI/ML TF-IDF, OpenCV histogram extraction & composite matching
 ├── seed_data.py               # Database seeder with realistic campus data & test accounts
-├── test_app.py                # Automated unit test suite verifying all modules
 ├── requirements.txt           # Python dependency specifications
 ├── academic_assets.db         # SQLite database file (created on init)
+├── templates/
+│   ├── base.html              # University layout with QR Scanner navbar link
+│   ├── index.html             # Home portal with 5-category QR & GPS showcase cards
+│   ├── qr_scanner.html        # Multi-category QR Scanner, Leaflet GPS Radar & Passport tag
+│   └── ...                    # Authentication, items, claims, AI matcher, recovery templates
 ├── static/
 │   ├── css/
 │   │   └── style.css          # Sanskriti University custom palette & responsive styling

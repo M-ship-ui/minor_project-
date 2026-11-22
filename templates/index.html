@@ -27,6 +27,9 @@
                         <a href="{{ url_for('ai_matching_center') }}" class="btn btn-warning btn-lg px-4 shadow-sm fw-semibold text-dark">
                             <i class="fa-solid fa-microchip me-2"></i> Open AI Matcher
                         </a>
+                        <a href="{{ url_for('qr_scanner_hub') }}" class="btn btn-outline-warning btn-lg px-4 shadow-sm fw-semibold text-white">
+                            <i class="fa-solid fa-qrcode me-2"></i> QR Asset Scanner
+                        </a>
                     </div>
 
                     <!-- Quick Search Bar inside Hero -->
@@ -55,6 +58,126 @@
                                 <span class="small text-white-50">Audit Trails</span>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- SMART QR RECOVERY NETWORK & REAL-TIME GPS TRACER (VIVA SHOWCASE) -->
+    <!-- ============================================================== -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" style="background: linear-gradient(135deg, #021b38 0%, #063162 100%);">
+        <div class="card-body p-4 text-white">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 pb-2 border-bottom border-white-50">
+                <div>
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-2" style="background: rgba(255, 193, 7, 0.2); border: 1px solid #ffc107;">
+                        <i class="fa-solid fa-satellite-dish text-warning"></i>
+                        <span class="text-warning small fw-bold text-uppercase">Viva Defense Feature • Dual-Factor Asset Recovery</span>
+                    </div>
+                    <h3 class="fw-bold mb-1">
+                        <i class="fa-solid fa-qrcode text-warning me-2"></i>Multi-Category QR Asset Scanners &amp; Live GPS Radar
+                    </h3>
+                    <p class="text-white-50 mb-0 small">
+                        Dual-factor protection: pre-registered encrypted QR passports + real-time satellite GPS geolocation across all campus academic assets.
+                    </p>
+                </div>
+                <div class="mt-2 mt-md-0">
+                    <a href="{{ url_for('qr_scanner_hub') }}" class="btn btn-warning text-dark fw-bold px-4 py-2 shadow-sm rounded-pill">
+                        <i class="fa-solid fa-expand me-1"></i> Launch Full QR Scanner &amp; GPS Radar &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- 5 Asset Category Showcase Cards -->
+            <div class="row g-3">
+                <!-- 1. Laptops -->
+                <div class="col-lg col-md-4 col-sm-6">
+                    <div class="card h-100 border-0 rounded-3 text-dark shadow-sm bg-white p-3 hover-lift">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="badge bg-primary text-white px-2 py-1"><i class="fa-solid fa-laptop me-1"></i> Cat 1</span>
+                            <span class="badge bg-light text-danger border small"><i class="fa-solid fa-location-crosshairs text-danger me-1"></i> GPS Live</span>
+                        </div>
+                        <h6 class="fw-bold mb-1">Laptops &amp; PCs</h6>
+                        <p class="text-muted small mb-2">Dell XPS, ThinkPad, MacBooks with encrypted serial QR passport.</p>
+                        <div class="small text-muted mb-3">
+                            <i class="fa-solid fa-map-pin text-primary me-1"></i> Lab 3 (27.5035° N, 77.6738° E)
+                        </div>
+                        <a href="{{ url_for('qr_scanner_hub', category='laptops') }}" class="btn btn-outline-primary btn-sm fw-bold w-100 mt-auto">
+                            <i class="fa-solid fa-qrcode me-1"></i> Scan Laptop
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 2. Textbooks -->
+                <div class="col-lg col-md-4 col-sm-6">
+                    <div class="card h-100 border-0 rounded-3 text-dark shadow-sm bg-white p-3 hover-lift">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="badge bg-success text-white px-2 py-1"><i class="fa-solid fa-book me-1"></i> Cat 2</span>
+                            <span class="badge bg-light text-danger border small"><i class="fa-solid fa-location-crosshairs text-danger me-1"></i> GPS Live</span>
+                        </div>
+                        <h6 class="fw-bold mb-1">Library Textbooks</h6>
+                        <p class="text-muted small mb-2">Silberschatz OS, Organic Chem with Central Library ISBN QR.</p>
+                        <div class="small text-muted mb-3">
+                            <i class="fa-solid fa-map-pin text-success me-1"></i> Library 2F (27.5038° N, 77.6741° E)
+                        </div>
+                        <a href="{{ url_for('qr_scanner_hub', category='library_textbooks') }}" class="btn btn-outline-success btn-sm fw-bold w-100 mt-auto">
+                            <i class="fa-solid fa-qrcode me-1"></i> Scan Textbook
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 3. Lab Experiments -->
+                <div class="col-lg col-md-4 col-sm-6">
+                    <div class="card h-100 border-0 rounded-3 text-dark shadow-sm bg-white p-3 hover-lift">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="badge bg-danger text-white px-2 py-1"><i class="fa-solid fa-flask me-1"></i> Cat 3</span>
+                            <span class="badge bg-light text-danger border small"><i class="fa-solid fa-location-crosshairs text-danger me-1"></i> GPS Live</span>
+                        </div>
+                        <h6 class="fw-bold mb-1">Lab Experiments</h6>
+                        <p class="text-muted small mb-2">Digital Oscilloscopes, IoT kits, Microcontroller trainers.</p>
+                        <div class="small text-muted mb-3">
+                            <i class="fa-solid fa-map-pin text-danger me-1"></i> Embedded Lab (27.5032° N, 77.6734° E)
+                        </div>
+                        <a href="{{ url_for('qr_scanner_hub', category='lab_equipment') }}" class="btn btn-outline-danger btn-sm fw-bold w-100 mt-auto">
+                            <i class="fa-solid fa-qrcode me-1"></i> Scan Lab Gear
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 4. Electronics -->
+                <div class="col-lg col-md-4 col-sm-6">
+                    <div class="card h-100 border-0 rounded-3 text-dark shadow-sm bg-white p-3 hover-lift">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="badge bg-warning text-dark px-2 py-1"><i class="fa-solid fa-bolt me-1"></i> Cat 4</span>
+                            <span class="badge bg-light text-danger border small"><i class="fa-solid fa-location-crosshairs text-danger me-1"></i> GPS Live</span>
+                        </div>
+                        <h6 class="fw-bold mb-1">Electronics</h6>
+                        <p class="text-muted small mb-2">Casio Calculators, Fast Chargers, Earbuds, Smartwatches.</p>
+                        <div class="small text-muted mb-3">
+                            <i class="fa-solid fa-map-pin text-warning me-1"></i> Cafeteria (27.5029° N, 77.6743° E)
+                        </div>
+                        <a href="{{ url_for('qr_scanner_hub', category='electronics') }}" class="btn btn-outline-warning text-dark btn-sm fw-bold w-100 mt-auto">
+                            <i class="fa-solid fa-qrcode me-1"></i> Scan Electronics
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 5. Student IDs -->
+                <div class="col-lg col-md-4 col-sm-6">
+                    <div class="card h-100 border-0 rounded-3 text-dark shadow-sm bg-white p-3 hover-lift">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="badge bg-info text-dark px-2 py-1"><i class="fa-solid fa-id-card me-1"></i> Cat 5</span>
+                            <span class="badge bg-light text-danger border small"><i class="fa-solid fa-location-crosshairs text-danger me-1"></i> GPS Live</span>
+                        </div>
+                        <h6 class="fw-bold mb-1">Smart Student IDs</h6>
+                        <p class="text-muted small mb-2">O. Pulla Reddy (2302320110), Staff RFID smart pass.</p>
+                        <div class="small text-muted mb-3">
+                            <i class="fa-solid fa-map-pin text-info me-1"></i> Main Gate (27.5041° N, 77.6746° E)
+                        </div>
+                        <a href="{{ url_for('qr_scanner_hub', category='student_ids') }}" class="btn btn-outline-info text-dark btn-sm fw-bold w-100 mt-auto">
+                            <i class="fa-solid fa-qrcode me-1"></i> Scan ID Card
+                        </a>
                     </div>
                 </div>
             </div>
