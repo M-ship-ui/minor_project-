@@ -70,7 +70,7 @@
     <ul class="nav nav-pills nav-fill bg-white p-2 rounded-4 shadow-sm mb-4 border" id="categoryTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active fw-bold py-3 text-start d-flex align-items-center gap-3 rounded-3" 
-                    id="laptop-tab" data-bs-toggle="pill" data-bs-target="#laptop-pane" type="button" role="tab" onclick="switchCategory('laptops')">
+                    id="laptop-tab" type="button" onclick="switchCategory('laptops')">
                 <div class="rounded-circle p-2 bg-primary text-white d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
                     <i class="fa-solid fa-laptop fs-5"></i>
                 </div>
@@ -82,7 +82,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link fw-bold py-3 text-start d-flex align-items-center gap-3 rounded-3" 
-                    id="book-tab" data-bs-toggle="pill" data-bs-target="#book-pane" type="button" role="tab" onclick="switchCategory('library_textbooks')">
+                    id="book-tab" type="button" onclick="switchCategory('library_textbooks')">
                 <div class="rounded-circle p-2 bg-success text-white d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
                     <i class="fa-solid fa-book-bookmark fs-5"></i>
                 </div>
@@ -94,7 +94,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link fw-bold py-3 text-start d-flex align-items-center gap-3 rounded-3" 
-                    id="lab-tab" data-bs-toggle="pill" data-bs-target="#lab-pane" type="button" role="tab" onclick="switchCategory('lab_equipment')">
+                    id="lab-tab" type="button" onclick="switchCategory('lab_equipment')">
                 <div class="rounded-circle p-2 bg-danger text-white d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
                     <i class="fa-solid fa-flask-vial fs-5"></i>
                 </div>
@@ -106,7 +106,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link fw-bold py-3 text-start d-flex align-items-center gap-3 rounded-3" 
-                    id="elec-tab" data-bs-toggle="pill" data-bs-target="#elec-pane" type="button" role="tab" onclick="switchCategory('electronics')">
+                    id="elec-tab" type="button" onclick="switchCategory('electronics')">
                 <div class="rounded-circle p-2 bg-warning text-dark d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
                     <i class="fa-solid fa-bolt fs-5"></i>
                 </div>
@@ -118,7 +118,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link fw-bold py-3 text-start d-flex align-items-center gap-3 rounded-3" 
-                    id="id-tab" data-bs-toggle="pill" data-bs-target="#id-pane" type="button" role="tab" onclick="switchCategory('student_id')">
+                    id="id-tab" type="button" onclick="switchCategory('student_id')">
                 <div class="rounded-circle p-2 bg-info text-white d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
                     <i class="fa-solid fa-id-card fs-5"></i>
                 </div>
@@ -228,15 +228,15 @@
                         </div>
 
                         <!-- 1-Click Action Buttons -->
-                        <div class="d-flex flex-wrap gap-2 pt-2 border-top">
+                        <div class="d-flex flex-wrap align-items-center gap-2 pt-2 border-top">
                             <button class="btn btn-success btn-sm fw-bold px-3" onclick="executeHandover()">
                                 <i class="fa-solid fa-hand-holding-heart me-1"></i> 1-Click Handover to Security Desk
                             </button>
                             <button class="btn btn-outline-primary btn-sm fw-bold px-3" onclick="notifyOwner()">
                                 <i class="fa-solid fa-paper-plane me-1"></i> Masked Alert to Owner
                             </button>
-                            <a href="#" id="resultDetailLink" class="btn btn-outline-secondary btn-sm ms-auto">
-                                View Details &rarr;
+                            <a href="/items/1" id="resultDetailLink" class="btn btn-primary btn-sm fw-bold ms-auto text-white">
+                                <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> View Full Asset Record &rarr;
                             </a>
                         </div>
                     </div>
@@ -554,31 +554,75 @@
         }
     };
 
+    CATEGORIES_DATA.student_ids = CATEGORIES_DATA.student_id;
+
     let currentCategory = 'laptops';
     let mapInstance = null;
     let currentMarker = null;
     let currentCircle = null;
+
+    // SVG QR Code Fallback renderer for offline robustness
+    function renderSvgQrFallback(elemId, text, size) {
+        const target = document.getElementById(elemId);
+        if (!target) return;
+        target.innerHTML = `
+            <svg width="${size}" height="${size}" viewBox="0 0 100 100" style="background:#fff; padding:6px; border-radius:6px; display:inline-block;">
+                <rect x="0" y="0" width="100" height="100" fill="#fff" />
+                <rect x="5" y="5" width="28" height="28" fill="#002b5c" />
+                <rect x="9" y="9" width="20" height="20" fill="#fff" />
+                <rect x="13" y="13" width="12" height="12" fill="#002b5c" />
+                <rect x="67" y="5" width="28" height="28" fill="#002b5c" />
+                <rect x="71" y="9" width="20" height="20" fill="#fff" />
+                <rect x="75" y="13" width="12" height="12" fill="#002b5c" />
+                <rect x="5" y="67" width="28" height="28" fill="#002b5c" />
+                <rect x="9" y="71" width="20" height="20" fill="#fff" />
+                <rect x="13" y="75" width="12" height="12" fill="#002b5c" />
+                <rect x="38" y="12" width="6" height="6" fill="#002b5c" />
+                <rect x="48" y="12" width="6" height="6" fill="#002b5c" />
+                <rect x="58" y="12" width="6" height="6" fill="#002b5c" />
+                <rect x="12" y="38" width="6" height="6" fill="#002b5c" />
+                <rect x="12" y="48" width="6" height="6" fill="#002b5c" />
+                <rect x="12" y="58" width="6" height="6" fill="#002b5c" />
+                <rect x="40" y="40" width="20" height="20" fill="#002b5c" />
+                <rect x="44" y="44" width="12" height="12" fill="#fff" />
+                <rect x="48" y="48" width="4" height="4" fill="#002b5c" />
+                <rect x="66" y="40" width="8" height="8" fill="#002b5c" />
+                <rect x="80" y="40" width="8" height="8" fill="#002b5c" />
+                <rect x="66" y="54" width="14" height="8" fill="#002b5c" />
+                <rect x="40" y="66" width="10" height="10" fill="#002b5c" />
+                <rect x="54" y="66" width="8" height="8" fill="#002b5c" />
+                <rect x="40" y="80" width="12" height="8" fill="#002b5c" />
+                <rect x="72" y="72" width="18" height="18" fill="#002b5c" />
+                <rect x="76" y="76" width="10" height="10" fill="#fff" />
+                <rect x="79" y="79" width="4" height="4" fill="#002b5c" />
+            </svg>
+        `;
+    }
 
     // Initialize Leaflet Map
     function initMap() {
         const defaultLat = 27.50352;
         const defaultLng = 77.67385;
         
-        mapInstance = L.map('campusMap', {
-            zoomControl: true,
-            attributionControl: false
-        }).setView([defaultLat, defaultLng], 17);
+        try {
+            mapInstance = L.map('campusMap', {
+                zoomControl: true,
+                attributionControl: false
+            }).setView([defaultLat, defaultLng], 17);
 
-        // OpenStreetMap Tile Layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19
-        }).addTo(mapInstance);
+            // OpenStreetMap Tile Layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19
+            }).addTo(mapInstance);
 
-        updateMapLocation(defaultLat, defaultLng, CATEGORIES_DATA.laptops);
+            updateMapLocation(defaultLat, defaultLng, CATEGORIES_DATA.laptops);
+        } catch(e) {
+            console.warn("Leaflet map initialization:", e);
+        }
     }
 
     function updateMapLocation(lat, lng, data) {
-        if (!mapInstance) return;
+        if (!mapInstance || typeof L === "undefined") return;
 
         // Remove old marker/circle
         if (currentMarker) mapInstance.removeLayer(currentMarker);
@@ -663,37 +707,67 @@
     }
 
     function renderQrCodes(catKey) {
-        const data = CATEGORIES_DATA[catKey];
+        const data = CATEGORIES_DATA[catKey] || CATEGORIES_DATA.laptops;
         const verifyUrl = window.location.origin + "/qr-verify?tag=" + encodeURIComponent(data.tag);
 
-        // 1. Center scanner preview QR
-        const targetDiv = document.getElementById("liveQrTarget");
-        targetDiv.innerHTML = "";
-        new QRCode(targetDiv, {
-            text: verifyUrl,
-            width: 140,
-            height: 140,
-            colorDark: "#002b5c",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.M
-        });
+        try {
+            if (typeof QRCode !== "undefined") {
+                // 1. Center scanner preview QR
+                const targetDiv = document.getElementById("liveQrTarget");
+                if (targetDiv) {
+                    targetDiv.innerHTML = "";
+                    new QRCode(targetDiv, {
+                        text: verifyUrl,
+                        width: 140,
+                        height: 140,
+                        colorDark: "#002b5c",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.M
+                    });
+                }
 
-        // 2. Printable passport tag QR
-        const passportDiv = document.getElementById("passportQrCode");
-        passportDiv.innerHTML = "";
-        new QRCode(passportDiv, {
-            text: verifyUrl,
-            width: 110,
-            height: 110,
-            colorDark: "#001a38",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
-        });
+                // 2. Printable passport tag QR
+                const passportDiv = document.getElementById("passportQrCode");
+                if (passportDiv) {
+                    passportDiv.innerHTML = "";
+                    new QRCode(passportDiv, {
+                        text: verifyUrl,
+                        width: 110,
+                        height: 110,
+                        colorDark: "#001a38",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                }
+                return;
+            }
+        } catch(e) {
+            console.warn("Using SVG QR fallback:", e);
+        }
+
+        renderSvgQrFallback("liveQrTarget", verifyUrl, 140);
+        renderSvgQrFallback("passportQrCode", verifyUrl, 110);
     }
 
     function switchCategory(catKey) {
+        if (!catKey || !CATEGORIES_DATA[catKey]) {
+            catKey = (catKey === 'student_ids') ? 'student_id' : 'laptops';
+        }
         currentCategory = catKey;
         const data = CATEGORIES_DATA[catKey];
+
+        // Update active tab button highlight
+        document.querySelectorAll("#categoryTabs .nav-link").forEach(btn => btn.classList.remove("active"));
+        const tabMap = {
+            'laptops': 'laptop-tab',
+            'library_textbooks': 'book-tab',
+            'lab_equipment': 'lab-tab',
+            'electronics': 'elec-tab',
+            'student_id': 'id-tab',
+            'student_ids': 'id-tab'
+        };
+        const activeBtn = document.getElementById(tabMap[catKey] || 'laptop-tab');
+        if (activeBtn) activeBtn.classList.add("active");
 
         // Update badge and scanner labels
         document.getElementById("activeCategoryBadge").innerText = data.name + " Scanner";
@@ -728,9 +802,21 @@
             protoUl.appendChild(li);
         });
 
-        // Hide result box until simulated
-        document.getElementById("scanResultBox").style.display = "none";
-        document.getElementById("scannerStatusText").innerHTML = '<i class="fa-solid fa-radar me-1"></i> READY TO SCAN: ' + data.name.toUpperCase();
+        // POPULATE RESULT BOX IMMEDIATELY SO DEMO ITEM IS ALWAYS VISIBLE AND INTERACTIVE
+        document.getElementById("resultTitle").innerText = data.title;
+        document.getElementById("resultOwner").innerText = data.owner;
+        document.getElementById("resultTag").innerText = data.tag;
+        document.getElementById("resultLocation").innerText = data.location;
+        document.getElementById("resultScore").innerText = data.score;
+        document.getElementById("resultIcon").className = "fa-solid " + data.icon + " fs-1";
+        document.getElementById("resultDetailLink").href = data.link;
+        document.getElementById("scanTimestamp").innerText = new Date().toLocaleTimeString();
+        document.getElementById("lastPingTime").innerText = new Date().toLocaleTimeString();
+
+        // Make scanResultBox visible on load & category switch
+        const box = document.getElementById("scanResultBox");
+        box.style.display = "block";
+        document.getElementById("scannerStatusText").innerHTML = '<span class="text-info fw-bold"><i class="fa-solid fa-radar me-1"></i> ACTIVE DEMO ASSET: ' + data.name.toUpperCase() + '</span>';
 
         renderQrCodes(catKey);
     }
@@ -781,6 +867,11 @@
         const box = document.getElementById("scanResultBox");
         box.style.display = "block";
         box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        // Highlight box animation
+        box.style.transition = "all 0.3s ease";
+        box.style.transform = "scale(1.02)";
+        setTimeout(() => { box.style.transform = "scale(1)"; }, 300);
 
         // Log GPS telemetry to backend
         logGpsTelemetry(data.tag, data.lat, data.lng, data.landmarkTitle);
@@ -852,10 +943,14 @@
         }
     }
 
-    // Initialize on page load
+    // Initialize on page load with URL category param support
     window.addEventListener("DOMContentLoaded", () => {
         initMap();
-        switchCategory("laptops");
+        const urlParams = new URLSearchParams(window.location.search);
+        let paramCat = urlParams.get('category') || '{{ active_category or "laptops" }}';
+        if (paramCat === 'student_ids') paramCat = 'student_id';
+        if (!CATEGORIES_DATA[paramCat]) paramCat = 'laptops';
+        switchCategory(paramCat);
     });
 </script>
 
